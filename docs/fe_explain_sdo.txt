@@ -1,0 +1,30 @@
+	(1)	(2)	(3)	(4)	(5)	(6)	(7)	(8)	(9)	(10)	(11)	(12)	(13)	(14)	(15)	(16)	(17)
+	N data	N data	N data	N data	N data	N x T data	N x T data	N data	N x T data	N x T data	N data	N data	N data	N x T data	N x T data	N data	N data
+VARIABLES	y0	y1	y1	y1 with y0 lag	y1 with y0 lag	FE	FE	y1-y0	FE	FE	y1-y0	y1-y0	y1-y0	FE	FE	y1-y0	y1-y0
+																	
+sdo0	1.050		0.380		0.0330											0.172	0.135
+	(0.0989)		(0.115)		(0.0808)											(0.0801)	(0.0952)
+sdo1		1.484	1.274	0.565	0.548												
+		(0.0947)	(0.114)	(0.0713)	(0.0822)												
+rep_warmer0				0.725	0.723												
+				(0.0224)	(0.0227)												
+sdo						0.169	0.169		0.188	0.187				0.271	0.253		
+						(0.0758)	(0.0772)		(0.0757)	(0.0772)				(0.0850)	(0.0901)		
+sdo_diff								0.169			0.188	0.187	0.187			0.271	0.253
+								(0.0758)			(0.0757)	(0.0772)	(0.0758)			(0.0850)	(0.0901)
+wave2016									-0.391	-0.375				-1.051	-0.907		
+									(0.129)	(0.143)				(0.334)	(0.401)		
+ch_sdo													0.104				
+													(0.360)				
+sdo_xw1														0.172	0.135		
+														(0.0801)	(0.0952)		
+Constant	5.992	3.776	3.167	0.162	0.115	9.126	9.329		9.248	9.444	-0.391	-0.375	-0.479	8.933	9.189	-1.051	-0.907
+	(0.414)	(0.410)	(0.448)	(0.304)	(0.325)	(0.299)	(0.312)		(0.300)	(0.314)	(0.129)	(0.143)	(0.331)	(0.334)	(0.362)	(0.334)	(0.401)
+																	
+Observations	948	948	948	948	948	1,896	1,608	948	1,896	1,608	948	804	948	1,896	1,608	948	804
+R-squared	0.106	0.206	0.215	0.623	0.623	0.005	0.006	0.005	0.015	0.014	0.006	0.007	0.007	0.019	0.017	0.011	0.010
+2-wave-only	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes
+Changers	All	All	All	All	All	All	Changers	All	All	Changers	All	Changers	All	All	Changers	All	Changers
+Group						A	A	A	B	C	B	C	C	F	F	F	F
+Number of MNO						948	804		948	804				948	804		
+Standard errors in parentheses																	

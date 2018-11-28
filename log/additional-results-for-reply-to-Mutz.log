@@ -1,0 +1,1213 @@
+------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/slm45/Dropbox/backup_Stata/mutz-analysis/log/additional-results-for-reply-to-Mutz.log
+  log type:  text
+ opened on:   8 Jul 2018, 14:50:25
+
+. 
+. 
+. ********************************************************************************
+. *** Load merged data created by 
+. ***    mk-mutz-panel-merged-releases.do
+. ********************************************************************************
+. 
+. use data/mutz-panel-merged-releases.dta, clear 
+
+. 
+. * drop from merged data because recreated with this Mutz's code below
+. 
+. drop difftherm prexparty3wave preincomewave cutdifftherm
+
+. 
+. 
+. ********************************************************************************
+. ********************************************************************************
+. *** Mutz Analysis (Setup)
+. ********************************************************************************
+. ********************************************************************************
+. 
+. generate difftherm=reptherm-demtherm
+(1,368 missing values generated)
+
+. egen cutdifftherm= cut(difftherm), group(20)
+(1368 missing values generated)
+
+. 
+.   /* by wave interactions */
+. 
+. generate pretradeselfwave=pretradeself*wave
+(1,294 missing values generated)
+
+. generate prelookingforworkwave=prelookingforwork*wave
+(1,244 missing values generated)
+
+. generate prepersonecowave=prepersoneco*wave
+(1,260 missing values generated)
+
+. generate preproimmselfwave=preproimmself*wave
+(1,292 missing values generated)
+
+. generate prechinaselfwave=prechinaself*wave
+(1,284 missing values generated)
+
+. generate preeconomywave=preeconomy*wave
+(1,270 missing values generated)
+
+. generate presdowave=sdoscale10*wave
+(1,274 missing values generated)
+
+. generate pretradediffdemwave =pretradediffdem*wave
+(1,308 missing values generated)
+
+. generate preimmdiffdemwave=preimmdiffdem*wave
+(1,302 missing values generated)
+
+. generate prechinadiffdemwave=prechinadiffdem*wave
+(1,294 missing values generated)
+
+. generate pretradediffrepwave =pretradediffrep*wave
+(1,310 missing values generated)
+
+. generate preimmdiffrepwave=preimmdiffrep*wave
+(1,308 missing values generated)
+
+. generate prechinadiffrepwave=prechinadiffrep*wave
+(1,298 missing values generated)
+
+. * generate newacs_medianinc=acs_medianinc/1000
+. * generate acsincomewave =newacs_medianinc*wave
+. * generate acsunemplwave = acs_unemploy*wave
+. * generate acsmfgwave = acs_mfg*wave
+. generate pretradeperwave=pretradeper*wave
+(1,310 missing values generated)
+
+. generate prexparty3wave=prexparty3*wave
+(1,244 missing values generated)
+
+. generate preincomewave=preincome*wave
+(1,244 missing values generated)
+
+. 
+. ********************************************************************************
+. ********************************************************************************
+. *** Critic Analysis (Setup)
+. ********************************************************************************
+. ********************************************************************************
+. 
+. *** create education variables
+. 
+. rename ppeducat education
+
+. tab education, gen(ed_lev)
+
+    Education (Categorical) |      Freq.     Percent        Cum.
+----------------------------+-----------------------------------
+      Less than high school |         87        3.55        3.55
+                High school |        955       38.92       42.46
+               Some college |        548       22.33       64.79
+Bachelor's degree or higher |        864       35.21      100.00
+----------------------------+-----------------------------------
+                      Total |      2,454      100.00
+
+. recode education 1/2=2, gen(educ3)
+(87 differences between education and educ3)
+
+. tab education educ3      
+
+                      |  RECODE of education (Education
+            Education |          (Categorical))
+        (Categorical) |         2          3          4 |     Total
+----------------------+---------------------------------+----------
+Less than high school |        87          0          0 |        87 
+          High school |       955          0          0 |       955 
+         Some college |         0        548          0 |       548 
+Bachelor's degree or  |         0          0        864 |       864 
+----------------------+---------------------------------+----------
+                Total |     1,042        548        864 |     2,454 
+
+
+. summ ed*
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+   education |      2,454    2.892013    .9336713          1          4
+     ed_lev1 |      2,454    .0354523    .1849578          0          1
+     ed_lev2 |      2,454    .3891606    .4876592          0          1
+     ed_lev3 |      2,454    .2233089    .4165486          0          1
+     ed_lev4 |      2,454    .3520782    .4777156          0          1
+-------------+---------------------------------------------------------
+       educ3 |      2,454    2.927465    .8784898          2          4
+
+. 
+. *** Determine pattern for self, rep, dem, and diff vars, as well as wave
+. 
+. summ healthself demhealth healthdiffdem rephealth healthdiffrep ///
+>      chinaself chinadem chinadiffdem chinarep chinadiffrep ///
+>      proimmself proimmdems immdiffdem proimmreps immdiffrep /// 
+>      tradeself tradedem tradediffdem traderep tradediffrep 
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+  healthself |      2,416    3.704884    1.948677          1          7
+   demhealth |      2,410    5.685062    1.541183          1          7
+healthdiff~m |      2,405    2.224532    2.273404          0          6
+   rephealth |      2,416    2.171772    1.438269          1          7
+healthdiff~p |      2,411    2.130651    1.972618          0          6
+-------------+---------------------------------------------------------
+   chinaself |      2,413    3.191048    1.569946          1          7
+    chinadem |      2,410    4.537759    1.468793          1          7
+chinadiffdem |      2,406    1.775145    1.880345          0          6
+    chinarep |      2,408    3.542359    1.810471          1          7
+chinadiffrep |      2,405    1.621206    1.685546          0          6
+-------------+---------------------------------------------------------
+  proimmself |      2,412    3.823798    2.112564          1          7
+  proimmdems |      2,413     5.58765    1.488863          1          7
+  immdiffdem |      2,406    2.291355     2.12624          0          6
+  proimmreps |      2,408    2.782392    1.560306          1          7
+  immdiffrep |      2,401    2.306955    1.952645          0          6
+-------------+---------------------------------------------------------
+   tradeself |      2,405    3.641996    1.496079          1          7
+    tradedem |      2,401    4.543107    1.392807          1          7
+tradediffdem |      2,397     1.50897    1.788138          0          6
+    traderep |      2,401    3.526864    1.669146          1          7
+tradediffrep |      2,396    1.358514    1.602847          0          6
+
+. 
+.  * Note: The difference variables are the absolute values of the differences.
+.  *       These will be given the "ad" prefix below, and new "dd" variables
+.  *         will be created for signed differences.
+. 
+. bysort wave: summ traderep tradedem tradeself 
+
+------------------------------------------------------------------------------------------------------------------------
+-> wave = 0
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    traderep |      1,197    4.192147    1.354358          1          7
+    tradedem |      1,198    4.184474    1.279695          1          7
+   tradeself |      1,202    3.797837    1.464505          1          7
+
+------------------------------------------------------------------------------------------------------------------------
+-> wave = 1
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    traderep |      1,204    2.865449    1.690077          1          7
+    tradedem |      1,203    4.900249    1.409508          1          7
+   tradeself |      1,203    3.486284    1.511609          1          7
+
+------------------------------------------------------------------------------------------------------------------------
+-> wave = .
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    traderep |          0
+    tradedem |          0
+   tradeself |          0
+
+
+. bysort wave: summ traderep tradedem tradeself if voted2016==1
+
+------------------------------------------------------------------------------------------------------------------------
+-> wave = 0
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    traderep |        925     4.16973    1.383402          1          7
+    tradedem |        925    4.177297    1.292219          1          7
+   tradeself |        929    3.828848    1.464297          1          7
+
+------------------------------------------------------------------------------------------------------------------------
+-> wave = 1
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    traderep |        929    2.771798    1.699271          1          7
+    tradedem |        928    4.974138       1.394          1          7
+   tradeself |        928    3.496767    1.514401          1          7
+
+------------------------------------------------------------------------------------------------------------------------
+-> wave = .
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    traderep |          0
+    tradedem |          0
+   tradeself |          0
+
+
+. 
+.  * Note: The comparison of these values to Mutz's Figure 1 confrims the wave
+.  *       dummy is for the year 2016.
+. 
+. *** Create clones for readability **********************************************
+. 
+. *** outcome vars
+. 
+. clonevar rep_warmer = cutdifftherm
+(1,368 missing values generated)
+
+. clonevar rep_over_dem = demrepvote
+(1,686 missing values generated)
+
+. 
+. clonevar rep_warm = reptherm
+(1,349 missing values generated)
+
+. clonevar dem_warm = demtherm
+(1,324 missing values generated)
+
+. 
+. *** time-varying vars
+. 
+. clonevar wave2016 = wave
+(1,244 missing values generated)
+
+. clonevar party3_dem = xparty3 
+(1,250 missing values generated)
+
+. *clonevar income = income
+. clonevar look_work = lookingforwork 
+(1,244 missing values generated)
+
+. clonevar finances_better = personeco
+(1,262 missing values generated)
+
+. clonevar trade_help_u = tradeper
+(1,311 missing values generated)
+
+. clonevar more_trade = tradeself
+(1,293 missing values generated)
+
+. clonevar more_imm = proimmself
+(1,286 missing values generated)
+
+. clonevar china_opp = chinaself
+(1,285 missing values generated)
+
+. clonevar add_more_trade = tradediffdem
+(1,301 missing values generated)
+
+. clonevar add_more_imm = immdiffdem
+(1,292 missing values generated)
+
+. clonevar add_china_opp = chinadiffdem
+(1,292 missing values generated)
+
+. clonevar adr_more_trade = tradediffrep
+(1,302 missing values generated)
+
+. clonevar adr_more_imm = immdiffrep
+(1,297 missing values generated)
+
+. clonevar adr_china_opp = chinadiffrep
+(1,293 missing values generated)
+
+. *clonevar sdo = sdo
+. clonevar economy_better = economy
+(1,263 missing values generated)
+
+. 
+. * first wave variables copied into both waves as constants
+. 
+. clonevar party3_dem_c = prexparty3 
+(1,244 missing values generated)
+
+. clonevar income_c = preincome
+(1,244 missing values generated)
+
+. clonevar look_work_c = prelookingforwork 
+(1,244 missing values generated)
+
+. clonevar finances_better_c = prepersoneco
+(1,260 missing values generated)
+
+. clonevar trade_help_u_c = pretradeper
+(1,310 missing values generated)
+
+. clonevar more_trade_c = pretradeself
+(1,294 missing values generated)
+
+. clonevar more_imm_c = preproimmself
+(1,292 missing values generated)
+
+. clonevar china_opp_c = prechinaself
+(1,284 missing values generated)
+
+. clonevar add_more_trade_c = pretradediffdem
+(1,308 missing values generated)
+
+. clonevar add_more_imm_c = preimmdiffdem
+(1,302 missing values generated)
+
+. clonevar add_china_opp_c = prechinadiffdem
+(1,294 missing values generated)
+
+. clonevar adr_more_trade_c = pretradediffrep
+(1,310 missing values generated)
+
+. clonevar adr_more_imm_c = preimmdiffrep
+(1,308 missing values generated)
+
+. clonevar adr_china_opp_c = prechinadiffrep
+(1,298 missing values generated)
+
+. clonevar sdo_c = sdoscale10
+(1,274 missing values generated)
+
+. clonevar economy_better_c = preeconomy
+(1,270 missing values generated)
+
+. 
+. * first wave constant variables multiplied by wave dummy
+. 
+. clonevar party3_dem_xw1 = prexparty3wave 
+(1,244 missing values generated)
+
+. clonevar income_xw1 = preincomewave
+(1,244 missing values generated)
+
+. clonevar look_work_xw1 = prelookingforworkwave 
+(1,244 missing values generated)
+
+. clonevar finances_better_xw1 = prepersonecowave
+(1,260 missing values generated)
+
+. clonevar trade_help_u_xw1 = pretradeperwave
+(1,310 missing values generated)
+
+. clonevar more_trade_xw1 = pretradeselfwave
+(1,294 missing values generated)
+
+. clonevar more_imm_xw1 = preproimmselfwave
+(1,292 missing values generated)
+
+. clonevar china_opp_xw1 = prechinaselfwave
+(1,284 missing values generated)
+
+. clonevar add_more_trade_xw1 = pretradediffdemwave
+(1,308 missing values generated)
+
+. clonevar add_more_imm_xw1 = preimmdiffdemwave
+(1,302 missing values generated)
+
+. clonevar add_china_opp_xw1 = prechinadiffdemwave
+(1,294 missing values generated)
+
+. clonevar adr_more_trade_xw1 = pretradediffrepwave
+(1,310 missing values generated)
+
+. clonevar adr_more_imm_xw1 = preimmdiffrepwave
+(1,308 missing values generated)
+
+. clonevar adr_china_opp_xw1 = prechinadiffrepwave
+(1,298 missing values generated)
+
+. clonevar sdo_xw1 = presdowave
+(1,274 missing values generated)
+
+. clonevar economy_better_xw1 = preeconomywave
+(1,270 missing values generated)
+
+. 
+. *** Create candidate and difference variables **********************************
+. 
+. clonevar gov_health = healthself
+(1,282 missing values generated)
+
+. 
+. clonevar d_more_trade = tradedem
+(1,297 missing values generated)
+
+. clonevar d_more_imm   = proimmdems
+(1,285 missing values generated)
+
+. clonevar d_china_opp  = chinadem
+(1,288 missing values generated)
+
+. clonevar d_gov_health = demhealth
+(1,288 missing values generated)
+
+. clonevar r_more_trade = traderep
+(1,297 missing values generated)
+
+. clonevar r_more_imm   = proimmreps
+(1,290 missing values generated)
+
+. clonevar r_china_opp  = chinarep
+(1,290 missing values generated)
+
+. clonevar r_gov_health = rephealth
+(1,282 missing values generated)
+
+. 
+. gen dd_more_trade = more_trade - d_more_trade 
+(1,301 missing values generated)
+
+. gen dd_more_imm   = more_imm - d_more_imm 
+(1,292 missing values generated)
+
+. gen dd_china_opp  = china_opp - d_china_opp 
+(1,292 missing values generated)
+
+. gen dd_gov_health = gov_health - d_gov_health 
+(1,293 missing values generated)
+
+. gen dr_more_trade = more_trade - r_more_trade 
+(1,302 missing values generated)
+
+. gen dr_more_imm   = more_imm - r_more_imm 
+(1,297 missing values generated)
+
+. gen dr_china_opp  = china_opp - r_china_opp 
+(1,293 missing values generated)
+
+. gen dr_gov_health = gov_health - r_gov_health 
+(1,287 missing values generated)
+
+. 
+. gen add_gov_health = abs(dd_gov_health)
+(1,293 missing values generated)
+
+. gen adr_gov_health = abs(dr_gov_health)
+(1,287 missing values generated)
+
+. 
+. ********************************************************************************
+. ********************************************************************************
+. *** Morgan Reanalysis Results
+. ********************************************************************************
+. ********************************************************************************
+. 
+. * temproary files
+. 
+. tempfile long_all_vars
+
+. 
+. save `long_all_vars'
+file /var/folders/nb/51y2n3vn6wx7lfh5ckdjsjh40000gn/T//S_01565.000001 saved
+
+. 
+. tab voted2012 rep_over_dem if wave == 0, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |           rep_over_dem
+ voted2012 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |       127         89         82 |       298 
+           |     42.62      29.87      27.52 |    100.00 
+           |     22.36      18.74      44.57 |     24.29 
+           |     10.35       7.25       6.68 |     24.29 
+-----------+---------------------------------+----------
+         1 |       441        386        102 |       929 
+           |     47.47      41.55      10.98 |    100.00 
+           |     77.64      81.26      55.43 |     75.71 
+           |     35.94      31.46       8.31 |     75.71 
+-----------+---------------------------------+----------
+     Total |       568        475        184 |     1,227 
+           |     46.29      38.71      15.00 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     46.29      38.71      15.00 |    100.00 
+
+
+. tab voted2016 rep_over_dem if wave == 1, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |           rep_over_dem
+ voted2016 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |        92         86        103 |       281 
+           |     32.74      30.60      36.65 |    100.00 
+           |     17.49      19.41      39.92 |     22.90 
+           |      7.50       7.01       8.39 |     22.90 
+-----------+---------------------------------+----------
+         1 |       434        357        155 |       946 
+           |     45.88      37.74      16.38 |    100.00 
+           |     82.51      80.59      60.08 |     77.10 
+           |     35.37      29.10      12.63 |     77.10 
+-----------+---------------------------------+----------
+     Total |       526        443        258 |     1,227 
+           |     42.87      36.10      21.03 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     42.87      36.10      21.03 |    100.00 
+
+
+. 
+. tab voted2012 rep_over_dem if wave == 0 & release3 == 1, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |           rep_over_dem
+ voted2012 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |       127         89         82 |       298 
+           |     42.62      29.87      27.52 |    100.00 
+           |     22.36      18.74      44.57 |     24.29 
+           |     10.35       7.25       6.68 |     24.29 
+-----------+---------------------------------+----------
+         1 |       441        386        102 |       929 
+           |     47.47      41.55      10.98 |    100.00 
+           |     77.64      81.26      55.43 |     75.71 
+           |     35.94      31.46       8.31 |     75.71 
+-----------+---------------------------------+----------
+     Total |       568        475        184 |     1,227 
+           |     46.29      38.71      15.00 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     46.29      38.71      15.00 |    100.00 
+
+
+. tab voted2016 rep_over_dem if wave == 1 & release3 == 1, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |           rep_over_dem
+ voted2016 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |        88         86        103 |       277 
+           |     31.77      31.05      37.18 |    100.00 
+           |     17.29      19.55      40.55 |     23.03 
+           |      7.32       7.15       8.56 |     23.03 
+-----------+---------------------------------+----------
+         1 |       421        354        151 |       926 
+           |     45.46      38.23      16.31 |    100.00 
+           |     82.71      80.45      59.45 |     76.97 
+           |     35.00      29.43      12.55 |     76.97 
+-----------+---------------------------------+----------
+     Total |       509        440        254 |     1,203 
+           |     42.31      36.58      21.11 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     42.31      36.58      21.11 |    100.00 
+
+
+. 
+. * reshape with subset, and  then consider patterns
+. 
+. use `long_all_vars', replace
+
+. 
+. keep MNO wave education income sdo voted2016 voted2012 party7 release3 ///
+>   ed_lev1-economy_better gov_health-adr_gov_health
+
+. 
+. order _all, alphabetic
+
+. order MNO wave* release3 rep_* dem_* ed* income part*
+
+. order d_* r_* ad* dd* dr*, last
+
+. 
+. drop if wave==.
+(1,244 observations deleted)
+
+. drop wave2016
+
+. recode wave 0=2012 1=2016
+(wave: 2454 changes made)
+
+. 
+. reshape wide release3 rep_over_dem-dr_more_trade, i(MNO) j(wave)
+(note: j = 2012 2016)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                     2454   ->    1227
+Number of variables                  51   ->      99
+j variable (2 values)              wave   ->   (dropped)
+xij variables:
+                               release3   ->   release32012 release32016
+                           rep_over_dem   ->   rep_over_dem2012 rep_over_dem2016
+                               rep_warm   ->   rep_warm2012 rep_warm2016
+                             rep_warmer   ->   rep_warmer2012 rep_warmer2016
+                               dem_warm   ->   dem_warm2012 dem_warm2016
+                                ed_lev1   ->   ed_lev12012 ed_lev12016
+                                ed_lev2   ->   ed_lev22012 ed_lev22016
+                                ed_lev3   ->   ed_lev32012 ed_lev32016
+                                ed_lev4   ->   ed_lev42012 ed_lev42016
+                                  educ3   ->   educ32012 educ32016
+                              education   ->   education2012 education2016
+                                 income   ->   income2012 income2016
+                             party3_dem   ->   party3_dem2012 party3_dem2016
+                                 party7   ->   party72012 party72016
+                              china_opp   ->   china_opp2012 china_opp2016
+                         economy_better   ->   economy_better2012 economy_better2016
+                        finances_better   ->   finances_better2012 finances_better2016
+                             gov_health   ->   gov_health2012 gov_health2016
+                              look_work   ->   look_work2012 look_work2016
+                               more_imm   ->   more_imm2012 more_imm2016
+                             more_trade   ->   more_trade2012 more_trade2016
+                                    sdo   ->   sdo2012 sdo2016
+                           trade_help_u   ->   trade_help_u2012 trade_help_u2016
+                              voted2012   ->   voted20122012 voted20122016
+                              voted2016   ->   voted20162012 voted20162016
+                            d_china_opp   ->   d_china_opp2012 d_china_opp2016
+                           d_gov_health   ->   d_gov_health2012 d_gov_health2016
+                             d_more_imm   ->   d_more_imm2012 d_more_imm2016
+                           d_more_trade   ->   d_more_trade2012 d_more_trade2016
+                            r_china_opp   ->   r_china_opp2012 r_china_opp2016
+                           r_gov_health   ->   r_gov_health2012 r_gov_health2016
+                             r_more_imm   ->   r_more_imm2012 r_more_imm2016
+                           r_more_trade   ->   r_more_trade2012 r_more_trade2016
+                          add_china_opp   ->   add_china_opp2012 add_china_opp2016
+                         add_gov_health   ->   add_gov_health2012 add_gov_health2016
+                           add_more_imm   ->   add_more_imm2012 add_more_imm2016
+                         add_more_trade   ->   add_more_trade2012 add_more_trade2016
+                          adr_china_opp   ->   adr_china_opp2012 adr_china_opp2016
+                         adr_gov_health   ->   adr_gov_health2012 adr_gov_health2016
+                           adr_more_imm   ->   adr_more_imm2012 adr_more_imm2016
+                         adr_more_trade   ->   adr_more_trade2012 adr_more_trade2016
+                           dd_china_opp   ->   dd_china_opp2012 dd_china_opp2016
+                          dd_gov_health   ->   dd_gov_health2012 dd_gov_health2016
+                            dd_more_imm   ->   dd_more_imm2012 dd_more_imm2016
+                          dd_more_trade   ->   dd_more_trade2012 dd_more_trade2016
+                           dr_china_opp   ->   dr_china_opp2012 dr_china_opp2016
+                          dr_gov_health   ->   dr_gov_health2012 dr_gov_health2016
+                            dr_more_imm   ->   dr_more_imm2012 dr_more_imm2016
+                          dr_more_trade   ->   dr_more_trade2012 dr_more_trade2016
+-----------------------------------------------------------------------------
+
+. 
+. gen romney = rep_over_dem2012
+(184 missing values generated)
+
+. gen trump = rep_over_dem2016
+(258 missing values generated)
+
+. 
+. tab voted20122012 romney, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+      2012 |              romney
+ voted2012 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |       127         89         82 |       298 
+           |     42.62      29.87      27.52 |    100.00 
+           |     22.36      18.74      44.57 |     24.29 
+           |     10.35       7.25       6.68 |     24.29 
+-----------+---------------------------------+----------
+         1 |       441        386        102 |       929 
+           |     47.47      41.55      10.98 |    100.00 
+           |     77.64      81.26      55.43 |     75.71 
+           |     35.94      31.46       8.31 |     75.71 
+-----------+---------------------------------+----------
+     Total |       568        475        184 |     1,227 
+           |     46.29      38.71      15.00 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     46.29      38.71      15.00 |    100.00 
+
+
+. tab voted20122016 romney, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+      2016 |              romney
+ voted2012 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |       127         89         82 |       298 
+           |     42.62      29.87      27.52 |    100.00 
+           |     22.36      18.74      44.57 |     24.29 
+           |     10.35       7.25       6.68 |     24.29 
+-----------+---------------------------------+----------
+         1 |       441        386        102 |       929 
+           |     47.47      41.55      10.98 |    100.00 
+           |     77.64      81.26      55.43 |     75.71 
+           |     35.94      31.46       8.31 |     75.71 
+-----------+---------------------------------+----------
+     Total |       568        475        184 |     1,227 
+           |     46.29      38.71      15.00 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     46.29      38.71      15.00 |    100.00 
+
+
+. tab voted20162016 trump, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+      2016 |              trump
+ voted2016 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |        92         86        103 |       281 
+           |     32.74      30.60      36.65 |    100.00 
+           |     17.49      19.41      39.92 |     22.90 
+           |      7.50       7.01       8.39 |     22.90 
+-----------+---------------------------------+----------
+         1 |       434        357        155 |       946 
+           |     45.88      37.74      16.38 |    100.00 
+           |     82.51      80.59      60.08 |     77.10 
+           |     35.37      29.10      12.63 |     77.10 
+-----------+---------------------------------+----------
+     Total |       526        443        258 |     1,227 
+           |     42.87      36.10      21.03 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     42.87      36.10      21.03 |    100.00 
+
+
+. 
+. tab voted20122016 romney if release32016 == 1, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+      2016 |              romney
+ voted2012 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |       123         86         82 |       291 
+           |     42.27      29.55      28.18 |    100.00 
+           |     22.04      18.61      44.81 |     24.19 
+           |     10.22       7.15       6.82 |     24.19 
+-----------+---------------------------------+----------
+         1 |       435        376        101 |       912 
+           |     47.70      41.23      11.07 |    100.00 
+           |     77.96      81.39      55.19 |     75.81 
+           |     36.16      31.26       8.40 |     75.81 
+-----------+---------------------------------+----------
+     Total |       558        462        183 |     1,203 
+           |     46.38      38.40      15.21 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     46.38      38.40      15.21 |    100.00 
+
+
+. tab voted20162016 trump if release32016 == 1, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+      2016 |              trump
+ voted2016 |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |        88         86        103 |       277 
+           |     31.77      31.05      37.18 |    100.00 
+           |     17.29      19.55      40.55 |     23.03 
+           |      7.32       7.15       8.56 |     23.03 
+-----------+---------------------------------+----------
+         1 |       421        354        151 |       926 
+           |     45.46      38.23      16.31 |    100.00 
+           |     82.71      80.45      59.45 |     76.97 
+           |     35.00      29.43      12.55 |     76.97 
+-----------+---------------------------------+----------
+     Total |       509        440        254 |     1,203 
+           |     42.31      36.58      21.11 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     42.31      36.58      21.11 |    100.00 
+
+
+. 
+. gen vote_both=0
+
+. replace vote_both = 1 if voted20122016 == 1 & voted20162016 == 1
+(854 real changes made)
+
+.  
+. tab romney trump, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |              trump
+    romney |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |       450         38         80 |       568 
+           |     79.23       6.69      14.08 |    100.00 
+           |     85.55       8.58      31.01 |     46.29 
+           |     36.67       3.10       6.52 |     46.29 
+-----------+---------------------------------+----------
+         1 |        35        353         87 |       475 
+           |      7.37      74.32      18.32 |    100.00 
+           |      6.65      79.68      33.72 |     38.71 
+           |      2.85      28.77       7.09 |     38.71 
+-----------+---------------------------------+----------
+         . |        41         52         91 |       184 
+           |     22.28      28.26      49.46 |    100.00 
+           |      7.79      11.74      35.27 |     15.00 
+           |      3.34       4.24       7.42 |     15.00 
+-----------+---------------------------------+----------
+     Total |       526        443        258 |     1,227 
+           |     42.87      36.10      21.03 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     42.87      36.10      21.03 |    100.00 
+
+
+. tab romney trump, r col cell
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |         trump
+    romney |         0          1 |     Total
+-----------+----------------------+----------
+         0 |       450         38 |       488 
+           |     92.21       7.79 |    100.00 
+           |     92.78       9.72 |     55.71 
+           |     51.37       4.34 |     55.71 
+-----------+----------------------+----------
+         1 |        35        353 |       388 
+           |      9.02      90.98 |    100.00 
+           |      7.22      90.28 |     44.29 
+           |      4.00      40.30 |     44.29 
+-----------+----------------------+----------
+     Total |       485        391 |       876 
+           |     55.37      44.63 |    100.00 
+           |    100.00     100.00 |    100.00 
+           |     55.37      44.63 |    100.00 
+
+
+. tab romney trump if release32016 == 1, r col cell
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |         trump
+    romney |         0          1 |     Total
+-----------+----------------------+----------
+         0 |       440         38 |       478 
+           |     92.05       7.95 |    100.00 
+           |     93.82       9.79 |     55.78 
+           |     51.34       4.43 |     55.78 
+-----------+----------------------+----------
+         1 |        29        350 |       379 
+           |      7.65      92.35 |    100.00 
+           |      6.18      90.21 |     44.22 
+           |      3.38      40.84 |     44.22 
+-----------+----------------------+----------
+     Total |       469        388 |       857 
+           |     54.73      45.27 |    100.00 
+           |    100.00     100.00 |    100.00 
+           |     54.73      45.27 |    100.00 
+
+
+.  
+. tab romney trump if voted20162016 == 1, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |              trump
+    romney |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |       374         29         47 |       450 
+           |     83.11       6.44      10.44 |    100.00 
+           |     86.18       8.12      30.32 |     47.57 
+           |     39.53       3.07       4.97 |     47.57 
+-----------+---------------------------------+----------
+         1 |        30        292         66 |       388 
+           |      7.73      75.26      17.01 |    100.00 
+           |      6.91      81.79      42.58 |     41.01 
+           |      3.17      30.87       6.98 |     41.01 
+-----------+---------------------------------+----------
+         . |        30         36         42 |       108 
+           |     27.78      33.33      38.89 |    100.00 
+           |      6.91      10.08      27.10 |     11.42 
+           |      3.17       3.81       4.44 |     11.42 
+-----------+---------------------------------+----------
+     Total |       434        357        155 |       946 
+           |     45.88      37.74      16.38 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     45.88      37.74      16.38 |    100.00 
+
+
+. tab romney trump if voted20162016 == 1, r  col cell
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |         trump
+    romney |         0          1 |     Total
+-----------+----------------------+----------
+         0 |       374         29 |       403 
+           |     92.80       7.20 |    100.00 
+           |     92.57       9.03 |     55.59 
+           |     51.59       4.00 |     55.59 
+-----------+----------------------+----------
+         1 |        30        292 |       322 
+           |      9.32      90.68 |    100.00 
+           |      7.43      90.97 |     44.41 
+           |      4.14      40.28 |     44.41 
+-----------+----------------------+----------
+     Total |       404        321 |       725 
+           |     55.72      44.28 |    100.00 
+           |    100.00     100.00 |    100.00 
+           |     55.72      44.28 |    100.00 
+
+
+. tab romney trump if voted20162016 == 1 & release32016 == 1, r col cell
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |         trump
+    romney |         0          1 |     Total
+-----------+----------------------+----------
+         0 |       367         29 |       396 
+           |     92.68       7.32 |    100.00 
+           |     93.62       9.12 |     55.77 
+           |     51.69       4.08 |     55.77 
+-----------+----------------------+----------
+         1 |        25        289 |       314 
+           |      7.96      92.04 |    100.00 
+           |      6.38      90.88 |     44.23 
+           |      3.52      40.70 |     44.23 
+-----------+----------------------+----------
+     Total |       392        318 |       710 
+           |     55.21      44.79 |    100.00 
+           |    100.00     100.00 |    100.00 
+           |     55.21      44.79 |    100.00 
+
+
+. 
+. tab romney trump if vote_both == 1, r col cell miss
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |              trump
+    romney |         0          1          . |     Total
+-----------+---------------------------------+----------
+         0 |       345         25         40 |       410 
+           |     84.15       6.10       9.76 |    100.00 
+           |     86.90       7.81      29.20 |     48.01 
+           |     40.40       2.93       4.68 |     48.01 
+-----------+---------------------------------+----------
+         1 |        26        268         59 |       353 
+           |      7.37      75.92      16.71 |    100.00 
+           |      6.55      83.75      43.07 |     41.33 
+           |      3.04      31.38       6.91 |     41.33 
+-----------+---------------------------------+----------
+         . |        26         27         38 |        91 
+           |     28.57      29.67      41.76 |    100.00 
+           |      6.55       8.44      27.74 |     10.66 
+           |      3.04       3.16       4.45 |     10.66 
+-----------+---------------------------------+----------
+     Total |       397        320        137 |       854 
+           |     46.49      37.47      16.04 |    100.00 
+           |    100.00     100.00     100.00 |    100.00 
+           |     46.49      37.47      16.04 |    100.00 
+
+
+. tab romney trump if vote_both == 1, r col cell
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |         trump
+    romney |         0          1 |     Total
+-----------+----------------------+----------
+         0 |       345         25 |       370 
+           |     93.24       6.76 |    100.00 
+           |     92.99       8.53 |     55.72 
+           |     51.96       3.77 |     55.72 
+-----------+----------------------+----------
+         1 |        26        268 |       294 
+           |      8.84      91.16 |    100.00 
+           |      7.01      91.47 |     44.28 
+           |      3.92      40.36 |     44.28 
+-----------+----------------------+----------
+     Total |       371        293 |       664 
+           |     55.87      44.13 |    100.00 
+           |    100.00     100.00 |    100.00 
+           |     55.87      44.13 |    100.00 
+
+
+. tab romney trump if vote_both == 1 & release32016 == 1, r col cell
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+|  row percentage   |
+| column percentage |
+|  cell percentage  |
++-------------------+
+
+           |         trump
+    romney |         0          1 |     Total
+-----------+----------------------+----------
+         0 |       339         25 |       364 
+           |     93.13       6.87 |    100.00 
+           |     94.17       8.62 |     56.00 
+           |     52.15       3.85 |     56.00 
+-----------+----------------------+----------
+         1 |        21        265 |       286 
+           |      7.34      92.66 |    100.00 
+           |      5.83      91.38 |     44.00 
+           |      3.23      40.77 |     44.00 
+-----------+----------------------+----------
+     Total |       360        290 |       650 
+           |     55.38      44.62 |    100.00 
+           |    100.00     100.00 |    100.00 
+           |     55.38      44.62 |    100.00 
+
+
+. 
+. 
+. /* 
+> 
+> *** Examine thermometer ratings
+> 
+> *    These results show that there is plenty of variance in differences in 
+> *    thermometer ratings.  They also show that switches in party id are, as
+> *    expected, related to thermometer ratings, suggesting that party id
+> *    is indeed endoengous to vote choice.
+> 
+> 
+> sum *warm*
+> corr rep_warm2012 rep_warm2016 rep_warmer2012 rep_warmer2016
+> corr dem_warm2012 dem_warm2016 rep_warmer2012 rep_warmer2016
+> 
+> 
+> table party72012, c(mean rep_warm2012 mean rep_warm2016 n MNO)
+> table party72012, c(mean dem_warm2012 mean dem_warm2016 n MNO)
+> 
+> table party72012 party72016, c(mean rep_warm2012 mean rep_warm2016 n MNO)
+> table party72012 party72016, c(mean dem_warm2012 mean dem_warm2016 n MNO)
+> 
+> table party3_dem2012 party3_dem2016, c(mean rep_warm2012 mean rep_warm2016 n MNO)
+> table party3_dem2012 party3_dem2016, c(mean dem_warm2012 mean dem_warm2016 n MNO)
+> 
+> gen warmdiff = rep_warmer2016 - rep_warmer2012
+> tab warmdiff
+> recode warmdiff min/-1=-1 1/max=1, gen(warmdiff3)
+> tab warmdiff3
+> tab warmdiff3 vote_both, r col
+> 
+> * Examine predictors
+> 
+> local vars_for_descriptives party3_dem ///
+>   income look_work finances_better trade_help_u ///
+>   more_trade more_imm china_opp sdo economy_better
+> 
+> tab income2012
+> tab income2016
+> 
+> tab income2012 income2016 if vote_both == 1
+> 
+> foreach var in `vars_for_descriptives' {
+>   summ `var'2012 `var'2016
+>   gen `var'_change = `var'2016 - `var'2012
+>   table romney trump if vote_both == 1, c(mean `var'2012 semean `var'2012 ///
+>     n `var'2012) format(%9.2f)
+>   table romney trump if vote_both == 1, c(mean `var'2016 semean `var'2016 ///
+>     n `var'2016) format(%9.2f)
+>   table romney trump if vote_both == 1, c(mean `var'_change semean ///
+>     `var'_change n `var'_change) format(%9.2f)
+> }
+> 
+> */
+. 
+. log close
+      name:  <unnamed>
+       log:  /Users/slm45/Dropbox/backup_Stata/mutz-analysis/log/additional-results-for-reply-to-Mutz.log
+  log type:  text
+ closed on:   8 Jul 2018, 14:50:25
+------------------------------------------------------------------------------------------------------------------------

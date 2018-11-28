@@ -1,0 +1,803 @@
+------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/stephenmorgan/Dropbox/Documents/status-threat-and-material-interests/analysis-as-of-20181126/log/use
+> -mutz-to-explain-fe-models-two-predictors.log
+  log type:  text
+ opened on:  26 Nov 2018, 13:46:34
+
+. 
+. ********************************************************************************
+. *** This file carries on from use-mutz-to-explain-fe-models.do in order to 
+. ***  demonstrate that the basic reasoning (with the slight exception of drift
+. ***  complications) is the same for models with more than one predictor.
+. ********************************************************************************
+. 
+. *** Select sample and variables
+. 
+. use data/explain-fe-models-long.dta, replace
+
+. 
+. local var1 sdo
+
+. local var2 trade_help_u
+
+. 
+. keep if valid_waves_`var1' == 2
+(1,802 observations deleted)
+
+. keep if valid_waves_`var2' == 2
+(58 observations deleted)
+
+. 
+. *** Estimate models
+. 
+.  ***************************************
+.  ***************************************
+.  *** Cross-sectional models
+.  ***************************************
+.  ***************************************
+.  
+.  preserve
+
+.  include analysis/reshape-in-loop-chunk-two-vars.do
+
+.  keep MNO wave rep_warmer `var1' `var2' 
+
+. 
+.  reshape wide rep_warmer `var1' `var2', i(MNO) j(wave)
+(note: j = 0 1)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                     1838   ->     919
+Number of variables                   5   ->       7
+j variable (2 values)              wave   ->   (dropped)
+xij variables:
+                             rep_warmer   ->   rep_warmer0 rep_warmer1
+                                    sdo   ->   sdo0 sdo1
+                           trade_help_u   ->   trade_help_u0 trade_help_u1
+-----------------------------------------------------------------------------
+
+. 
+.  gen rep_warmer_diff = rep_warmer1 - rep_warmer0
+
+.  
+.  gen `var1'_diff = `var1'1 - `var1'0
+
+.  gen `var1'_mean = (`var1'1 + `var1'0)/2
+
+.  
+.  gen `var2'_diff = `var2'1 - `var2'0
+
+.  gen `var2'_mean = (`var2'1 + `var2'0)/2
+
+. 
+.  gen ch_`var1' = .
+(919 missing values generated)
+
+.  replace ch_`var1' = 0 if `var1'1 == `var1'0
+(141 real changes made)
+
+.  replace ch_`var1' = 1 if `var1'1 ~= `var1'0
+(778 real changes made)
+
+.  
+.  gen ch_`var2' = .
+(919 missing values generated)
+
+.  replace ch_`var2' = 0 if `var2'1 == `var2'0
+(402 real changes made)
+
+.  replace ch_`var2' = 1 if `var2'1 ~= `var2'0
+(517 real changes made)
+
+.  
+.  gen ch_both = ch_`var1' * ch_`var2'
+
+.  
+. 
+.   
+.  reg rep_warmer0 `var1'0 `var2'0
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(2, 916)       =     70.02
+       Model |   4130.2816         2   2065.1408   Prob > F        =    0.0000
+    Residual |  27015.3854       916  29.4927788   R-squared       =    0.1326
+-------------+----------------------------------   Adj R-squared   =    0.1307
+       Total |   31145.667       918  33.9277419   Root MSE        =    5.4307
+
+-------------------------------------------------------------------------------
+  rep_warmer0 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+         sdo0 |   1.047687   .0994185    10.54   0.000     .8525724    1.242801
+trade_help_u0 |  -.8841704   .1757934    -5.03   0.000    -1.229175   -.5391658
+        _cons |   8.323466   .6322227    13.17   0.000     7.082693     9.56424
+-------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel replace ///
+>   ctitle(N data, y0) ///
+>   addtext(2-wave-only, Yes, Changers, All) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+.  
+.  reg rep_warmer1 `var1'1 `var2'1
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(2, 916)       =    180.49
+       Model |  9290.03478         2  4645.01739   Prob > F        =    0.0000
+    Residual |  23573.3842       916  25.7351355   R-squared       =    0.2827
+-------------+----------------------------------   Adj R-squared   =    0.2811
+       Total |  32863.4189       918  35.7989313   Root MSE        =     5.073
+
+-------------------------------------------------------------------------------
+  rep_warmer1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+         sdo1 |   1.358716   .0929166    14.62   0.000     1.176362     1.54107
+trade_help_u1 |  -1.675643    .183459    -9.13   0.000    -2.035692   -1.315595
+        _cons |   8.756633   .6865229    12.76   0.000     7.409292    10.10397
+-------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N data, y1) ///
+>   addtext(2-wave-only, Yes, Changers, All) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+.  
+.  reg rep_warmer1 `var1'1 `var1'0 `var2'1 `var2'0
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(4, 914)       =     94.94
+       Model |     9646.15         4   2411.5375   Prob > F        =    0.0000
+    Residual |  23217.2689       914   25.401826   R-squared       =    0.2935
+-------------+----------------------------------   Adj R-squared   =    0.2904
+       Total |  32863.4189       918  35.7989313   Root MSE        =      5.04
+
+-------------------------------------------------------------------------------
+  rep_warmer1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+         sdo1 |   1.187122   .1106647    10.73   0.000      .969936    1.404309
+         sdo0 |   .3064596   .1122844     2.73   0.006     .0860945    .5268247
+trade_help_u1 |  -1.476975   .1922748    -7.68   0.000    -1.854326   -1.099623
+trade_help_u0 |  -.4601456   .1719727    -2.68   0.008    -.7976529   -.1226384
+        _cons |   8.948662    .776547    11.52   0.000     7.424639    10.47268
+-------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N data, y1) ///
+>   addtext(2-wave-only, Yes, Changers, All) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+.  
+.  reg rep_warmer1 rep_warmer0 `var1'1 `var2'1
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(3, 915)       =    587.89
+       Model |  21637.6554         3  7212.55179   Prob > F        =    0.0000
+    Residual |  11225.7636       915   12.268594   R-squared       =    0.6584
+-------------+----------------------------------   Adj R-squared   =    0.6573
+       Total |  32863.4189       918  35.7989313   Root MSE        =    3.5027
+
+-------------------------------------------------------------------------------
+  rep_warmer1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  rep_warmer0 |    .696621   .0219585    31.72   0.000     .6535262    .7397158
+         sdo1 |   .5397678   .0691534     7.81   0.000     .4040501    .6754854
+trade_help_u1 |  -.9989489   .1284533    -7.78   0.000    -1.251046   -.7468517
+        _cons |   3.216334   .5051591     6.37   0.000     2.224929    4.207739
+-------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N data, y1 with y0 lag) ///
+>   addtext(2-wave-only, Yes, Changers, All) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  reg rep_warmer1 rep_warmer0 `var1'1 `var1'0 `var2'1 `var2'0
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(5, 913)       =    352.10
+       Model |  21640.6661         5  4328.13322   Prob > F        =    0.0000
+    Residual |  11222.7528       913  12.2921718   R-squared       =    0.6585
+-------------+----------------------------------   Adj R-squared   =    0.6566
+       Total |  32863.4189       918  35.7989313   Root MSE        =     3.506
+
+-------------------------------------------------------------------------------
+  rep_warmer1 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  rep_warmer0 |   .6961158   .0222846    31.24   0.000     .6523808    .7398507
+         sdo1 |   .5475291   .0796587     6.87   0.000     .3911937    .7038645
+         sdo0 |  -.0143663   .0787813    -0.18   0.855    -.1689798    .1402473
+trade_help_u1 |   -.982964   .1346849    -7.30   0.000    -1.247292    -.718636
+trade_help_u0 |  -.0540602   .1203346    -0.45   0.653    -.2902248    .1821044
+        _cons |   3.344777   .5692031     5.88   0.000     2.227679    4.461876
+-------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N data, y1 with y0 lag) ///
+>   addtext(2-wave-only, Yes, Changers, All) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  restore
+
+.  
+.  ***************************************
+.  ***************************************
+.  *** 2-wave only R's, one-way FE
+.  ***************************************
+.  ***************************************
+.  
+.  xtreg rep_warmer `var1' `var2', fe
+
+Fixed-effects (within) regression               Number of obs     =      1,838
+Group variable: MNO                             Number of groups  =        919
+
+R-sq:                                           Obs per group:
+     within  = 0.0232                                         min =          2
+     between = 0.2452                                         avg =        2.0
+     overall = 0.1843                                         max =          2
+
+                                                F(2,917)          =      10.89
+corr(u_i, Xb)  = 0.3635                         Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+  rep_warmer |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         sdo |    .208565   .0756093     2.76   0.006     .0601776    .3569525
+trade_help_u |  -.4333667   .1124497    -3.85   0.000    -.6540553    -.212678
+       _cons |   10.12621   .4155451    24.37   0.000     9.310675    10.94174
+-------------+----------------------------------------------------------------
+     sigma_u |   5.331647
+     sigma_e |  2.7563762
+         rho |   .7890963   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(918, 917) = 6.34                    Prob > F = 0.0000
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N x T data, FE) ///
+>   addtext(2-wave-only, Yes, Changers, All, Group, A) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  xtreg rep_warmer `var1' `var2' if `var1'_change ~= 0 ////
+>   & `var2'_change ~= 0, fe
+
+Fixed-effects (within) regression               Number of obs     =        882
+Group variable: MNO                             Number of groups  =        441
+
+R-sq:                                           Obs per group:
+     within  = 0.0463                                         min =          2
+     between = 0.2720                                         avg =        2.0
+     overall = 0.1922                                         max =          2
+
+                                                F(2,439)          =      10.65
+corr(u_i, Xb)  = 0.3479                         Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+  rep_warmer |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         sdo |   .3015324   .1062728     2.84   0.005     .0926658    .5103991
+trade_help_u |  -.4910728   .1302967    -3.77   0.000    -.7471557   -.2349898
+       _cons |   10.47098   .5290821    19.79   0.000     9.431128    11.51083
+-------------+----------------------------------------------------------------
+     sigma_u |  5.2058413
+     sigma_e |  2.9478903
+         rho |  .75719885   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(440, 439) = 5.37                    Prob > F = 0.0000
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N x T data, FE) ///
+>   addtext(2-wave-only, Yes, Changers, Changers, Group, A) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  preserve
+
+.  include analysis/reshape-in-loop-chunk-two-vars.do
+
+.  keep MNO wave rep_warmer `var1' `var2' 
+
+. 
+.  reshape wide rep_warmer `var1' `var2', i(MNO) j(wave)
+(note: j = 0 1)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                     1838   ->     919
+Number of variables                   5   ->       7
+j variable (2 values)              wave   ->   (dropped)
+xij variables:
+                             rep_warmer   ->   rep_warmer0 rep_warmer1
+                                    sdo   ->   sdo0 sdo1
+                           trade_help_u   ->   trade_help_u0 trade_help_u1
+-----------------------------------------------------------------------------
+
+. 
+.  gen rep_warmer_diff = rep_warmer1 - rep_warmer0
+
+.  
+.  gen `var1'_diff = `var1'1 - `var1'0
+
+.  gen `var1'_mean = (`var1'1 + `var1'0)/2
+
+.  
+.  gen `var2'_diff = `var2'1 - `var2'0
+
+.  gen `var2'_mean = (`var2'1 + `var2'0)/2
+
+. 
+.  gen ch_`var1' = .
+(919 missing values generated)
+
+.  replace ch_`var1' = 0 if `var1'1 == `var1'0
+(141 real changes made)
+
+.  replace ch_`var1' = 1 if `var1'1 ~= `var1'0
+(778 real changes made)
+
+.  
+.  gen ch_`var2' = .
+(919 missing values generated)
+
+.  replace ch_`var2' = 0 if `var2'1 == `var2'0
+(402 real changes made)
+
+.  replace ch_`var2' = 1 if `var2'1 ~= `var2'0
+(517 real changes made)
+
+.  
+.  gen ch_both = ch_`var1' * ch_`var2'
+
+.  
+. 
+.  
+.  reg rep_warmer_diff `var1'_diff `var2'_diff, nocons
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(2, 917)       =     10.89
+       Model |  330.984062         2  165.492031   Prob > F        =    0.0000
+    Residual |  13934.0159       917  15.1952191   R-squared       =    0.0232
+-------------+----------------------------------   Adj R-squared   =    0.0211
+       Total |       14265       919  15.5223069   Root MSE        =    3.8981
+
+-----------------------------------------------------------------------------------
+  rep_warmer_diff |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         sdo_diff |    .208565   .0756093     2.76   0.006     .0601776    .3569525
+trade_help_u_diff |  -.4333667   .1124497    -3.85   0.000    -.6540553    -.212678
+-----------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>    ctitle(N data, y1-y0) ///
+>    addtext(2-wave-only, Yes, Changers, All, Group, A) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  restore
+
+. 
+.  ***************************************
+.  ***************************************
+.  *** 2-wave only R's, two-way FE
+.  ***************************************
+.  ***************************************
+.  
+.  xtreg rep_warmer `var1' `var2' wave2016, fe
+
+Fixed-effects (within) regression               Number of obs     =      1,838
+Group variable: MNO                             Number of groups  =        919
+
+R-sq:                                           Obs per group:
+     within  = 0.0323                                         min =          2
+     between = 0.2510                                         avg =        2.0
+     overall = 0.1817                                         max =          2
+
+                                                F(3,916)          =      10.20
+corr(u_i, Xb)  = 0.3531                         Prob > F          =     0.0000
+
+------------------------------------------------------------------------------
+  rep_warmer |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         sdo |   .2263862   .0755413     3.00   0.003     .0781322    .3746402
+trade_help_u |  -.4201192   .1120761    -3.75   0.000    -.6400749   -.2001635
+    wave2016 |  -.3775806   .1285886    -2.94   0.003    -.6299432   -.1252181
+       _cons |   10.21107   .4148369    24.61   0.000     9.396934    11.02522
+-------------+----------------------------------------------------------------
+     sigma_u |  5.3224583
+     sigma_e |  2.7449916
+         rho |  .78989864   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(918, 916) = 6.38                    Prob > F = 0.0000
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N x T data, FE) ///
+>   addtext(2-wave-only, Yes, Changers, All, Group, B) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+.  
+.  xtreg rep_warmer `var1' `var2' wave2016 if `var1'_change ~= 0 ///
+>   & `var2'_change ~= 0, fe
+
+Fixed-effects (within) regression               Number of obs     =        882
+Group variable: MNO                             Number of groups  =        441
+
+R-sq:                                           Obs per group:
+     within  = 0.0479                                         min =          2
+     between = 0.2733                                         avg =        2.0
+     overall = 0.1930                                         max =          2
+
+                                                F(3,438)          =       7.35
+corr(u_i, Xb)  = 0.3473                         Prob > F          =     0.0001
+
+------------------------------------------------------------------------------
+  rep_warmer |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         sdo |   .3083061   .1065804     2.89   0.004     .0988336    .5177787
+trade_help_u |  -.4873733    .130399    -3.74   0.000    -.7436588   -.2310878
+    wave2016 |   -.174852   .1992227    -0.88   0.381    -.5664033    .2166994
+       _cons |   10.52221     .53243    19.76   0.000     9.475773    11.56864
+-------------+----------------------------------------------------------------
+     sigma_u |  5.2023682
+     sigma_e |  2.9486619
+         rho |  .75685707   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(440, 438) = 5.37                    Prob > F = 0.0000
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N x T data, FE) ///
+>   addtext(2-wave-only, Yes, Changers, Changers, Group, C) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  preserve
+
+.  include analysis/reshape-in-loop-chunk-two-vars.do
+
+.  keep MNO wave rep_warmer `var1' `var2' 
+
+. 
+.  reshape wide rep_warmer `var1' `var2', i(MNO) j(wave)
+(note: j = 0 1)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                     1838   ->     919
+Number of variables                   5   ->       7
+j variable (2 values)              wave   ->   (dropped)
+xij variables:
+                             rep_warmer   ->   rep_warmer0 rep_warmer1
+                                    sdo   ->   sdo0 sdo1
+                           trade_help_u   ->   trade_help_u0 trade_help_u1
+-----------------------------------------------------------------------------
+
+. 
+.  gen rep_warmer_diff = rep_warmer1 - rep_warmer0
+
+.  
+.  gen `var1'_diff = `var1'1 - `var1'0
+
+.  gen `var1'_mean = (`var1'1 + `var1'0)/2
+
+.  
+.  gen `var2'_diff = `var2'1 - `var2'0
+
+.  gen `var2'_mean = (`var2'1 + `var2'0)/2
+
+. 
+.  gen ch_`var1' = .
+(919 missing values generated)
+
+.  replace ch_`var1' = 0 if `var1'1 == `var1'0
+(141 real changes made)
+
+.  replace ch_`var1' = 1 if `var1'1 ~= `var1'0
+(778 real changes made)
+
+.  
+.  gen ch_`var2' = .
+(919 missing values generated)
+
+.  replace ch_`var2' = 0 if `var2'1 == `var2'0
+(402 real changes made)
+
+.  replace ch_`var2' = 1 if `var2'1 ~= `var2'0
+(517 real changes made)
+
+.  
+.  gen ch_both = ch_`var1' * ch_`var2'
+
+.  
+. 
+.  
+.  reg rep_warmer_diff `var1'_diff `var2'_diff
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(2, 916)       =     11.19
+       Model |  337.340224         2  168.670112   Prob > F        =    0.0000
+    Residual |  13804.0809       916  15.0699573   R-squared       =    0.0239
+-------------+----------------------------------   Adj R-squared   =    0.0217
+       Total |  14141.4211       918  15.4045982   Root MSE        =     3.882
+
+-----------------------------------------------------------------------------------
+  rep_warmer_diff |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         sdo_diff |   .2263862   .0755413     3.00   0.003     .0781322    .3746402
+trade_help_u_diff |  -.4201192   .1120761    -3.75   0.000    -.6400749   -.2001635
+            _cons |  -.3775806   .1285886    -2.94   0.003    -.6299432   -.1252181
+-----------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>    ctitle(N data, y1-y0) ///
+>    addtext(2-wave-only, Yes, Changers, All, Group, B) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  reg rep_warmer_diff `var1'_diff `var2'_diff if `var1'1 ~= `var1'0 ///
+>   & `var2'1 ~= `var2'0
+
+      Source |       SS           df       MS      Number of obs   =       441
+-------------+----------------------------------   F(2, 438)       =     10.71
+       Model |  372.413409         2  186.206704   Prob > F        =    0.0000
+    Residual |  7616.47548       438  17.3892134   R-squared       =    0.0466
+-------------+----------------------------------   Adj R-squared   =    0.0423
+       Total |  7988.88889       440  18.1565657   Root MSE        =      4.17
+
+-----------------------------------------------------------------------------------
+  rep_warmer_diff |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         sdo_diff |   .3083061   .1065804     2.89   0.004     .0988336    .5177787
+trade_help_u_diff |  -.4873733    .130399    -3.74   0.000    -.7436588   -.2310878
+            _cons |   -.174852   .1992227    -0.88   0.381    -.5664033    .2166994
+-----------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>    ctitle(N data, y1-y0) ///
+>    addtext(2-wave-only, Yes, Changers, Changers, Group, C) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  reg rep_warmer_diff `var1'_diff `var2'_diff ch_`var1' ch_`var2' ch_both
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(5, 913)       =      5.72
+       Model |  429.354412         5  85.8708824   Prob > F        =    0.0000
+    Residual |  13712.0667       913   15.018693   R-squared       =    0.0304
+-------------+----------------------------------   Adj R-squared   =    0.0251
+       Total |  14141.4211       918  15.4045982   Root MSE        =    3.8754
+
+-----------------------------------------------------------------------------------
+  rep_warmer_diff |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         sdo_diff |   .2293825   .0754722     3.04   0.002     .0812633    .3775017
+trade_help_u_diff |  -.4343057   .1121205    -3.87   0.000    -.6543495   -.2142619
+           ch_sdo |   .2302675     .52521     0.44   0.661    -.8004917    1.261027
+  ch_trade_help_u |   1.093487   .6554624     1.67   0.096    -.1929008    2.379875
+          ch_both |  -.5828856   .7126887    -0.82   0.414    -1.981584    .8158127
+            _cons |  -.9076923   .4806837    -1.89   0.059    -1.851066     .035681
+-----------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>    ctitle(N data, y1-y0) ///
+>    addtext(2-wave-only, Yes, Changers, All, Group, C) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  restore
+
+. 
+.  ***************************************
+.  ***************************************
+.  *** 2-wave only R's, two-period models
+.  ***************************************
+.  ***************************************
+.  
+.  xtreg rep_warmer `var1' `var2' wave2016 `var1'_xw1 `var2'_xw1, fe
+
+Fixed-effects (within) regression               Number of obs     =      1,838
+Group variable: MNO                             Number of groups  =        919
+
+R-sq:                                           Obs per group:
+     within  = 0.0530                                         min =          2
+     between = 0.1881                                         avg =        2.0
+     overall = 0.1658                                         max =          2
+
+                                                F(5,914)          =      10.24
+corr(u_i, Xb)  = 0.2348                         Prob > F          =     0.0000
+
+----------------------------------------------------------------------------------
+      rep_warmer |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+             sdo |   .2683194   .0844127     3.18   0.002     .1026542    .4339846
+    trade_help_u |  -.7673073   .1466631    -5.23   0.000    -1.055143   -.4794717
+        wave2016 |    .898443   .5923337     1.52   0.130    -.2640491    2.060935
+         sdo_xw1 |   .1138989   .0805651     1.41   0.158    -.0442152    .2720131
+trade_help_u_xw1 |  -.6440938   .1638714    -3.93   0.000    -.9657018   -.3224859
+           _cons |   10.96656   .5314872    20.63   0.000      9.92348    12.00963
+-----------------+----------------------------------------------------------------
+         sigma_u |  5.1880125
+         sigma_e |  2.7184174
+             rho |  .78458722   (fraction of variance due to u_i)
+----------------------------------------------------------------------------------
+F test that all u_i=0: F(918, 914) = 6.43                    Prob > F = 0.0000
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N x T data, FE) ///
+>   addtext(2-wave-only, Yes, Changers, All, Group, F) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+.   
+.  xtreg rep_warmer `var1' `var2' wave2016 `var1'_xw1 `var2'_xw1 ///
+>   if `var1'_change ~= 0 & `var2'_change ~= 0, fe
+
+Fixed-effects (within) regression               Number of obs     =        882
+Group variable: MNO                             Number of groups  =        441
+
+R-sq:                                           Obs per group:
+     within  = 0.0677                                         min =          2
+     between = 0.1810                                         avg =        2.0
+     overall = 0.1606                                         max =          2
+
+                                                F(5,436)          =       6.33
+corr(u_i, Xb)  = 0.1956                         Prob > F          =     0.0000
+
+----------------------------------------------------------------------------------
+      rep_warmer |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+             sdo |   .3480362   .1244723     2.80   0.005      .103396    .5926765
+    trade_help_u |  -.8888002    .196788    -4.52   0.000    -1.275571   -.5020291
+        wave2016 |   1.192483   .8768675     1.36   0.175    -.5309295    2.915896
+         sdo_xw1 |   .0965125   .1319242     0.73   0.465    -.1627739    .3557989
+trade_help_u_xw1 |  -.7169002   .2514502    -2.85   0.005    -1.211105   -.2226951
+           _cons |   11.33508   .7236656    15.66   0.000     9.912778    12.75739
+-----------------+----------------------------------------------------------------
+         sigma_u |  5.1003918
+         sigma_e |  2.9246566
+             rho |  .75255404   (fraction of variance due to u_i)
+----------------------------------------------------------------------------------
+F test that all u_i=0: F(440, 436) = 5.39                    Prob > F = 0.0000
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>   ctitle(N x T data, FE) ///
+>   addtext(2-wave-only, Yes, Changers, Changers, Group, F) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  preserve
+
+.  include analysis/reshape-in-loop-chunk-two-vars.do
+
+.  keep MNO wave rep_warmer `var1' `var2' 
+
+. 
+.  reshape wide rep_warmer `var1' `var2', i(MNO) j(wave)
+(note: j = 0 1)
+
+Data                               long   ->   wide
+-----------------------------------------------------------------------------
+Number of obs.                     1838   ->     919
+Number of variables                   5   ->       7
+j variable (2 values)              wave   ->   (dropped)
+xij variables:
+                             rep_warmer   ->   rep_warmer0 rep_warmer1
+                                    sdo   ->   sdo0 sdo1
+                           trade_help_u   ->   trade_help_u0 trade_help_u1
+-----------------------------------------------------------------------------
+
+. 
+.  gen rep_warmer_diff = rep_warmer1 - rep_warmer0
+
+.  
+.  gen `var1'_diff = `var1'1 - `var1'0
+
+.  gen `var1'_mean = (`var1'1 + `var1'0)/2
+
+.  
+.  gen `var2'_diff = `var2'1 - `var2'0
+
+.  gen `var2'_mean = (`var2'1 + `var2'0)/2
+
+. 
+.  gen ch_`var1' = .
+(919 missing values generated)
+
+.  replace ch_`var1' = 0 if `var1'1 == `var1'0
+(141 real changes made)
+
+.  replace ch_`var1' = 1 if `var1'1 ~= `var1'0
+(778 real changes made)
+
+.  
+.  gen ch_`var2' = .
+(919 missing values generated)
+
+.  replace ch_`var2' = 0 if `var2'1 == `var2'0
+(402 real changes made)
+
+.  replace ch_`var2' = 1 if `var2'1 ~= `var2'0
+(517 real changes made)
+
+.  
+.  gen ch_both = ch_`var1' * ch_`var2'
+
+.  
+. 
+.     
+.  reg rep_warmer_diff `var1'_diff `var1'0 `var2'_diff `var2'0
+
+      Source |       SS           df       MS      Number of obs   =       919
+-------------+----------------------------------   F(4, 914)       =     10.71
+       Model |  632.879497         4  158.219874   Prob > F        =    0.0000
+    Residual |  13508.5416       914   14.779586   R-squared       =    0.0448
+-------------+----------------------------------   Adj R-squared   =    0.0406
+       Total |  14141.4211       918  15.4045982   Root MSE        =    3.8444
+
+-----------------------------------------------------------------------------------
+  rep_warmer_diff |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         sdo_diff |   .2683194   .0844127     3.18   0.002     .1026542    .4339846
+             sdo0 |   .1138989   .0805651     1.41   0.158    -.0442152    .2720131
+trade_help_u_diff |  -.7673073   .1466631    -5.23   0.000    -1.055143   -.4794717
+    trade_help_u0 |  -.6440938   .1638714    -3.93   0.000    -.9657018   -.3224859
+            _cons |    .898443   .5923337     1.52   0.130    -.2640491    2.060935
+-----------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>    ctitle(N data, y1-y0) ///
+>    addtext(2-wave-only, Yes, Changers, All, Group, F) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+. 
+.  reg rep_warmer_diff `var1'_diff `var1'0 `var2'_diff `var2'0 ///
+>   if `var1'1 ~= `var1'0 & `var2'1 ~= `var2'0
+
+      Source |       SS           df       MS      Number of obs   =       441
+-------------+----------------------------------   F(4, 436)       =      7.75
+       Model |   530.13564         4   132.53391   Prob > F        =    0.0000
+    Residual |  7458.75325       436  17.1072322   R-squared       =    0.0664
+-------------+----------------------------------   Adj R-squared   =    0.0578
+       Total |  7988.88889       440  18.1565657   Root MSE        =    4.1361
+
+-----------------------------------------------------------------------------------
+  rep_warmer_diff |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         sdo_diff |   .3480362   .1244723     2.80   0.005      .103396    .5926765
+             sdo0 |   .0965125   .1319242     0.73   0.465    -.1627739    .3557989
+trade_help_u_diff |  -.8888002    .196788    -4.52   0.000    -1.275571   -.5020291
+    trade_help_u0 |  -.7169002   .2514502    -2.85   0.005    -1.211105   -.2226951
+            _cons |   1.192483   .8768675     1.36   0.175    -.5309295    2.915896
+-----------------------------------------------------------------------------------
+
+.  outreg2 using docs/fe_explain_`var1'_`var2'.xls, excel append ///
+>    ctitle(N data, y1-y0) ///
+>    addtext(2-wave-only, Yes, Changers, Changers, Group, F) noaster
+docs/fe_explain_sdo_trade_help_u.xls
+dir : seeout
+
+.  
+.  restore
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /Users/stephenmorgan/Dropbox/Documents/status-threat-and-material-interests/analysis-as-of-20181126/log/use
+> -mutz-to-explain-fe-models-two-predictors.log
+  log type:  text
+ closed on:  26 Nov 2018, 13:46:35
+------------------------------------------------------------------------------------------------------------------------

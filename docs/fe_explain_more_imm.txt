@@ -1,0 +1,30 @@
+	(1)	(2)	(3)	(4)	(5)	(6)	(7)	(8)	(9)	(10)	(11)	(12)	(13)	(14)	(15)	(16)	(17)
+	N data	N data	N data	N data	N data	N x T data	N x T data	N data	N x T data	N x T data	N data	N data	N data	N x T data	N x T data	N data	N data
+VARIABLES	y0	y1	y1	y1 with y0 lag	y1 with y0 lag	FE	FE	y1-y0	FE	FE	y1-y0	y1-y0	y1-y0	FE	FE	y1-y0	y1-y0
+																	
+more_imm0	-1.258		-0.406		0.0206											-0.229	-0.180
+	(0.0735)		(0.0934)		(0.0692)											(0.0591)	(0.106)
+more_imm1		-1.611	-1.340	-0.750	-0.762												
+		(0.0669)	(0.0909)	(0.0552)	(0.0686)												
+rep_warmer0				0.661	0.662												
+				(0.0208)	(0.0212)												
+more_imm						-0.396	-0.396		-0.363	-0.365				-0.467	-0.451		
+						(0.0673)	(0.0697)		(0.0686)	(0.0723)				(0.0733)	(0.0880)		
+more_imm_diff								-0.396			-0.363	-0.365	-0.365			-0.467	-0.451
+								(0.0673)			(0.0686)	(0.0723)	(0.0698)			(0.0733)	(0.0880)
+wave2016									-0.281	-0.258				0.596	0.460		
+									(0.119)	(0.165)				(0.255)	(0.452)		
+ch_more_imm													0.0504				
+													(0.238)				
+more_imm_xw1														-0.229	-0.180		
+														(0.0591)	(0.106)		
+Constant	14.47	15.92	16.32	5.947	5.908	11.18	10.98		11.19	10.98	-0.281	-0.258	-0.309	11.58	11.30	0.596	0.460
+	(0.310)	(0.305)	(0.316)	(0.382)	(0.405)	(0.265)	(0.290)		(0.264)	(0.290)	(0.119)	(0.165)	(0.177)	(0.281)	(0.344)	(0.255)	(0.452)
+																	
+Observations	1,095	1,095	1,095	1,095	1,095	2,190	1,250	1,095	2,190	1,250	1,095	625	1,095	2,190	1,250	1,095	625
+R-squared	0.212	0.347	0.358	0.661	0.661	0.031	0.049	0.031	0.036	0.053	0.025	0.039	0.025	0.049	0.057	0.038	0.044
+2-wave-only	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes
+Changers	All	All	All	All	All	All	Changers	All	All	Changers	All	Changers	All	All	Changers	All	Changers
+Group						A	A	A	B	C	B	C	C	F	F	F	F
+Number of MNO						1,095	625		1,095	625				1,095	625		
+Standard errors in parentheses																	

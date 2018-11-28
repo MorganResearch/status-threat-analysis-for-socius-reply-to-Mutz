@@ -1,0 +1,1426 @@
+------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/slm45/Dropbox/backup_Stata/mutz/log/mutz-code-panel-edited-v1.log
+  log type:  text
+ opened on:  10 May 2018, 12:11:45
+
+. 
+. use data/mutz-panel-merged-releases.dta, clear 
+
+. 
+. ********************************************************************************
+. *** Original code with
+. ***    /* ___ */ inserted to drop unavailable variables 
+. ***    a few spaces added before the ///'s 
+> ********************************************************************************
+. 
+. * drop from merged data because recreated with this code
+. drop difftherm prexparty3wave preincomewave cutdifftherm
+
+. 
+. 
+. /* acsunemplwave acsmfgwave acsincomewave */
+. 
+. generate difftherm=reptherm-demtherm
+(1,368 missing values generated)
+
+. 
+.   /* by wave interactions */
+. 
+. generate pretradeselfwave=pretradeself*wave
+(1,294 missing values generated)
+
+. generate prelookingforworkwave=prelookingforwork*wave
+(1,244 missing values generated)
+
+. generate prepersonecowave=prepersoneco*wave
+(1,260 missing values generated)
+
+. generate preproimmselfwave=preproimmself*wave
+(1,292 missing values generated)
+
+. generate prechinaselfwave=prechinaself*wave
+(1,284 missing values generated)
+
+. generate preeconomywave=preeconomy*wave
+(1,270 missing values generated)
+
+. generate presdowave=sdoscale10*wave
+(1,274 missing values generated)
+
+. generate pretradediffdemwave =pretradediffdem*wave
+(1,308 missing values generated)
+
+. generate preimmdiffdemwave=preimmdiffdem*wave
+(1,302 missing values generated)
+
+. generate prechinadiffdemwave=prechinadiffdem*wave
+(1,294 missing values generated)
+
+. generate pretradediffrepwave =pretradediffrep*wave
+(1,310 missing values generated)
+
+. generate preimmdiffrepwave=preimmdiffrep*wave
+(1,308 missing values generated)
+
+. generate prechinadiffrepwave=prechinadiffrep*wave
+(1,298 missing values generated)
+
+. * generate newacs_medianinc=acs_medianinc/1000
+. * generate acsincomewave =newacs_medianinc*wave
+. * generate acsunemplwave = acs_unemploy*wave
+. * generate acsmfgwave = acs_mfg*wave
+. generate pretradeperwave=pretradeper*wave
+(1,310 missing values generated)
+
+. generate prexparty3wave=prexparty3*wave
+(1,244 missing values generated)
+
+. generate preincomewave=preincome*wave
+(1,244 missing values generated)
+
+. 
+. xtset MNO wave
+       panel variable:  MNO (unbalanced)
+        time variable:  wave, 0 to 1
+                delta:  1 unit
+
+. egen cutdifftherm= cut(difftherm), group(20)
+(1368 missing values generated)
+
+. 
+.  /*Table 1 analyses*/
+.  
+. xtreg cutdifftherm xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave , fe 
+
+Fixed-effects (within) regression               Number of obs     =      1,951
+Group variable: MNO                             Number of groups  =      1,092
+
+R-sq:                                           Obs per group:
+     within  = 0.2650                                         min =          1
+     between = 0.6938                                         avg =        1.8
+     overall = 0.6474                                         max =          2
+
+                                                F(33,826)         =       9.03
+corr(u_i, Xb)  = 0.5235                         Prob > F          =     0.0000
+
+---------------------------------------------------------------------------------------
+         cutdifftherm |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+              xparty3 |  -.6937187   .2382712    -2.91   0.004    -1.161407   -.2260305
+               income |  -.0088425   .0470468    -0.19   0.851    -.1011879    .0835029
+       lookingforwork |  -.0277297   .7163246    -0.04   0.969     -1.43376    1.378301
+            personeco |  -.0295071   .1682248    -0.18   0.861    -.3597055    .3006912
+             tradeper |   -.306447   .1636146    -1.87   0.061    -.6275963    .0147024
+            tradeself |  -.0400042    .124955    -0.32   0.749    -.2852709    .2052626
+           proimmself |  -.1675886   .1136311    -1.47   0.141    -.3906283     .055451
+            chinaself |   .1856188   .1151492     1.61   0.107    -.0404006    .4116382
+         tradediffdem |   .1203135   .1050365     1.15   0.252    -.0858563    .3264833
+           immdiffdem |   .1979208   .0993091     1.99   0.047      .002993    .3928487
+         chinadiffdem |   .3936106   .1018052     3.87   0.000     .1937833    .5934378
+         tradediffrep |  -.2114857   .0932865    -2.27   0.024    -.3945921   -.0283793
+           immdiffrep |  -.0171695   .0856153    -0.20   0.841    -.1852186    .1508796
+         chinadiffrep |  -.2103751   .0878423    -2.39   0.017    -.3827954   -.0379548
+                  sdo |    .182443   .0715055     2.55   0.011     .0420892    .3227968
+              economy |  -.5852071   .1549423    -3.78   0.000    -.8893341   -.2810801
+       prexparty3wave |   .2700105   .1923632     1.40   0.161    -.1075678    .6475887
+        preincomewave |  -.0464407   .0317594    -1.46   0.144    -.1087792    .0158979
+prelookingforworkwave |   .5374522    .813714     0.66   0.509    -1.059738    2.134643
+     prepersonecowave |  -.0920005   .1908487    -0.48   0.630    -.4666059    .2826049
+      pretradeperwave |  -.2524936   .1985359    -1.27   0.204    -.6421879    .1372006
+     pretradeselfwave |   .0391352    .141528     0.28   0.782    -.2386615    .3169319
+    preproimmselfwave |  -.2268935   .1234441    -1.84   0.066    -.4691945    .0154075
+     prechinaselfwave |  -.0044344    .131158    -0.03   0.973    -.2618767    .2530078
+  pretradediffdemwave |  -.1046418   .1424614    -0.73   0.463    -.3842707    .1749872
+    preimmdiffdemwave |  -.0912167   .1264699    -0.72   0.471    -.3394568    .1570234
+  prechinadiffdemwave |   .1137964   .1283162     0.89   0.375    -.1380678    .3656606
+  pretradediffrepwave |  -.0378828   .1272157    -0.30   0.766    -.2875869    .2118214
+    preimmdiffrepwave |   .2168835   .1132014     1.92   0.056    -.0053127    .4390798
+  prechinadiffrepwave |     .07545   .1116106     0.68   0.499    -.1436239    .2945238
+           presdowave |  -.0219803   .0790005    -0.28   0.781    -.1770456     .133085
+       preeconomywave |   .0859022    .188479     0.46   0.649     -.284052    .4558564
+                 wave |   .5572358   1.146054     0.49   0.627    -1.692284    2.806756
+                _cons |   12.83801   1.190873    10.78   0.000     10.50052     15.1755
+----------------------+----------------------------------------------------------------
+              sigma_u |  3.5759839
+              sigma_e |  2.4627513
+                  rho |  .67828958   (fraction of variance due to u_i)
+---------------------------------------------------------------------------------------
+F test that all u_i=0: F(1091, 826) = 1.75                   Prob > F = 0.0000
+
+. 
+.  
+. drop if voted2016==0
+(965 observations deleted)
+
+. logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO) 
+
+Iteration 0:   log pseudolikelihood = -933.13367  
+Iteration 1:   log pseudolikelihood = -257.79093  
+Iteration 2:   log pseudolikelihood = -215.57954  
+Iteration 3:   log pseudolikelihood = -208.89674  
+Iteration 4:   log pseudolikelihood = -208.77554  
+Iteration 5:   log pseudolikelihood = -208.77527  
+Iteration 6:   log pseudolikelihood = -208.77527  
+
+Logistic regression                             Number of obs     =      1,350
+                                                Wald chi2(33)     =     364.21
+                                                Prob > chi2       =     0.0000
+Log pseudolikelihood = -208.77527               Pseudo R2         =     0.7763
+
+                                           (Std. Err. adjusted for 796 clusters in MNO)
+---------------------------------------------------------------------------------------
+                      |               Robust
+           demrepvote |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+              xparty3 |  -1.621816   .1512133   -10.73   0.000    -1.918189   -1.325444
+               income |  -.0523427   .0363229    -1.44   0.150    -.1235343    .0188489
+       lookingforwork |   -.634361   .7425826    -0.85   0.393    -2.089796    .8210741
+            personeco |  -.0353143   .1738323    -0.20   0.839    -.3760194    .3053908
+             tradeper |   .1185535   .1458879     0.81   0.416    -.1673814    .4044885
+            tradeself |   -.018462   .1102556    -0.17   0.867     -.234559    .1976351
+           proimmself |   .0933784   .0979483     0.95   0.340    -.0985967    .2853535
+            chinaself |   .1203012   .1023631     1.18   0.240    -.0803268    .3209292
+         tradediffdem |   .5206451   .1304328     3.99   0.000     .2650014    .7762888
+           immdiffdem |   .3190926   .1026724     3.11   0.002     .1178584    .5203269
+         chinadiffdem |    .351735   .1012735     3.47   0.001     .1532426    .5502273
+         tradediffrep |  -.4567656   .1244499    -3.67   0.000    -.7006829   -.2128483
+           immdiffrep |  -.4144598   .0963528    -4.30   0.000    -.6033077   -.2256119
+         chinadiffrep |   -.327124   .0899308    -3.64   0.000    -.5033851    -.150863
+                  sdo |   .2541198   .0814502     3.12   0.002     .0944804    .4137591
+              economy |  -.7957797   .1475186    -5.39   0.000    -1.084911   -.5066487
+       prexparty3wave |  -.5149996    .270704    -1.90   0.057     -1.04557    .0155704
+        preincomewave |  -.0347395   .0560573    -0.62   0.535    -.1446097    .0751307
+prelookingforworkwave |  -2.235744    1.23788    -1.81   0.071    -4.661944     .190455
+     prepersonecowave |   .1826497   .3128856     0.58   0.559    -.4305947    .7958942
+      pretradeperwave |  -.3247971   .2068168    -1.57   0.116    -.7301505    .0805563
+     pretradeselfwave |  -.2592418    .190084    -1.36   0.173    -.6317996    .1133159
+    preproimmselfwave |    .122559   .1654234     0.74   0.459    -.2016649    .4467829
+     prechinaselfwave |  -.0666162   .1673506    -0.40   0.691    -.3946173    .2613849
+  pretradediffdemwave |   .1649333   .1398433     1.18   0.238    -.1091546    .4390212
+    preimmdiffdemwave |   .0534424   .1735642     0.31   0.758    -.2867372     .393622
+  prechinadiffdemwave |   -.084006   .1909024    -0.44   0.660    -.4581678    .2901557
+  pretradediffrepwave |  -.2345282   .2008306    -1.17   0.243    -.6281488    .1590925
+    preimmdiffrepwave |  -.1916889   .1833414    -1.05   0.296    -.5510315    .1676536
+  prechinadiffrepwave |  -.0677277   .1871602    -0.36   0.717    -.4345548    .2990995
+           presdowave |  -.0115267   .1396724    -0.08   0.934    -.2852795    .2622261
+       preeconomywave |  -.2698465   .3149601    -0.86   0.392    -.8871571     .347464
+                 wave |   3.603598   1.835842     1.96   0.050     .0054132    7.201783
+                _cons |   4.101726   1.122687     3.65   0.000     1.901299    6.302153
+---------------------------------------------------------------------------------------
+
+. 
+. 
+. /*  NOTE:  Toggle this section to reshape and calculate some results    
+> 
+> /* new code for the predicted probabilities of demrepvote */
+> /* Results for Figures 1 and 2, and Tables S1 and S2 */
+> /* over-time mean change */
+> 
+>         *drop _merge 
+>         drop if wave==.
+>         reshape wide reptherm-cutdifftherm, i(MNO) j(wave)
+>         
+>         ttest xparty31== xparty30
+>         ttest tradediffdem1== tradediffdem0
+>         ttest immdiffdem1== immdiffdem0
+>         ttest chinadiffdem1== chinadiffdem0
+>         ttest tradediffrep1== tradediffrep0
+>         ttest immdiffrep1== immdiffrep0
+>         ttest chinadiffrep1== chinadiffrep0
+>         ttest sdo1==sdo0
+> 
+> 
+> */
+. 
+. /* Back to long form */
+. 
+.         logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>         tradeself proimmself chinaself ///
+>                 tradediffdem immdiffdem chinadiffdem  ///
+>                 tradediffrep immdiffrep chinadiffrep ///
+>                 sdo  economy ///
+>                 prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>                 pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>                 pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>                 pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>                 presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>         wave, cluster(MNO) 
+
+Iteration 0:   log pseudolikelihood = -933.13367  
+Iteration 1:   log pseudolikelihood = -257.79093  
+Iteration 2:   log pseudolikelihood = -215.57954  
+Iteration 3:   log pseudolikelihood = -208.89674  
+Iteration 4:   log pseudolikelihood = -208.77554  
+Iteration 5:   log pseudolikelihood = -208.77527  
+Iteration 6:   log pseudolikelihood = -208.77527  
+
+Logistic regression                             Number of obs     =      1,350
+                                                Wald chi2(33)     =     364.21
+                                                Prob > chi2       =     0.0000
+Log pseudolikelihood = -208.77527               Pseudo R2         =     0.7763
+
+                                           (Std. Err. adjusted for 796 clusters in MNO)
+---------------------------------------------------------------------------------------
+                      |               Robust
+           demrepvote |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+----------------------+----------------------------------------------------------------
+              xparty3 |  -1.621816   .1512133   -10.73   0.000    -1.918189   -1.325444
+               income |  -.0523427   .0363229    -1.44   0.150    -.1235343    .0188489
+       lookingforwork |   -.634361   .7425826    -0.85   0.393    -2.089796    .8210741
+            personeco |  -.0353143   .1738323    -0.20   0.839    -.3760194    .3053908
+             tradeper |   .1185535   .1458879     0.81   0.416    -.1673814    .4044885
+            tradeself |   -.018462   .1102556    -0.17   0.867     -.234559    .1976351
+           proimmself |   .0933784   .0979483     0.95   0.340    -.0985967    .2853535
+            chinaself |   .1203012   .1023631     1.18   0.240    -.0803268    .3209292
+         tradediffdem |   .5206451   .1304328     3.99   0.000     .2650014    .7762888
+           immdiffdem |   .3190926   .1026724     3.11   0.002     .1178584    .5203269
+         chinadiffdem |    .351735   .1012735     3.47   0.001     .1532426    .5502273
+         tradediffrep |  -.4567656   .1244499    -3.67   0.000    -.7006829   -.2128483
+           immdiffrep |  -.4144598   .0963528    -4.30   0.000    -.6033077   -.2256119
+         chinadiffrep |   -.327124   .0899308    -3.64   0.000    -.5033851    -.150863
+                  sdo |   .2541198   .0814502     3.12   0.002     .0944804    .4137591
+              economy |  -.7957797   .1475186    -5.39   0.000    -1.084911   -.5066487
+       prexparty3wave |  -.5149996    .270704    -1.90   0.057     -1.04557    .0155704
+        preincomewave |  -.0347395   .0560573    -0.62   0.535    -.1446097    .0751307
+prelookingforworkwave |  -2.235744    1.23788    -1.81   0.071    -4.661944     .190455
+     prepersonecowave |   .1826497   .3128856     0.58   0.559    -.4305947    .7958942
+      pretradeperwave |  -.3247971   .2068168    -1.57   0.116    -.7301505    .0805563
+     pretradeselfwave |  -.2592418    .190084    -1.36   0.173    -.6317996    .1133159
+    preproimmselfwave |    .122559   .1654234     0.74   0.459    -.2016649    .4467829
+     prechinaselfwave |  -.0666162   .1673506    -0.40   0.691    -.3946173    .2613849
+  pretradediffdemwave |   .1649333   .1398433     1.18   0.238    -.1091546    .4390212
+    preimmdiffdemwave |   .0534424   .1735642     0.31   0.758    -.2867372     .393622
+  prechinadiffdemwave |   -.084006   .1909024    -0.44   0.660    -.4581678    .2901557
+  pretradediffrepwave |  -.2345282   .2008306    -1.17   0.243    -.6281488    .1590925
+    preimmdiffrepwave |  -.1916889   .1833414    -1.05   0.296    -.5510315    .1676536
+  prechinadiffrepwave |  -.0677277   .1871602    -0.36   0.717    -.4345548    .2990995
+           presdowave |  -.0115267   .1396724    -0.08   0.934    -.2852795    .2622261
+       preeconomywave |  -.2698465   .3149601    -0.86   0.392    -.8871571     .347464
+                 wave |   3.603598   1.835842     1.96   0.050     .0054132    7.201783
+                _cons |   4.101726   1.122687     3.65   0.000     1.901299    6.302153
+---------------------------------------------------------------------------------------
+
+. 
+. /* Changes in the predicted probabilities of demrepvote based on over time change
+> in the variable of interest at a time while holding everything else at their wave0 means */
+. 
+.         sum income lookingforwork personeco tradeper ///
+>                 tradeself proimmself chinaself economy ///
+>                 prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>                 pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>                 pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>                 pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>                 presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */  if wave==0
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+      income |        946    11.39958    4.131049          1         19
+lookingfor~k |        946    .0560254    .2300924          0          1
+   personeco |        941    2.828905     1.06164          1          5
+    tradeper |        924    2.625541    1.012617          1          5
+   tradeself |        929    3.828848    1.464297          1          7
+-------------+---------------------------------------------------------
+  proimmself |        929     3.70183    2.093814          1          7
+   chinaself |        933    3.184352    1.626066          1          7
+     economy |        937     2.80683    1.254069          1          5
+prexparty3~e |        946           0           0          0          0
+preincomew~e |        946           0           0          0          0
+-------------+---------------------------------------------------------
+prelooking~e |        946           0           0          0          0
+prepersone~e |        941           0           0          0          0
+pretradepe~e |        924           0           0          0          0
+pretradese~e |        929           0           0          0          0
+preproimms~e |        929           0           0          0          0
+-------------+---------------------------------------------------------
+prechinase~e |        933           0           0          0          0
+pretra~mwave |        923           0           0          0          0
+preimm~mwave |        925           0           0          0          0
+prechi~mwave |        928           0           0          0          0
+pretra~pwave |        923           0           0          0          0
+-------------+---------------------------------------------------------
+preimm~pwave |        923           0           0          0          0
+prechi~pwave |        927           0           0          0          0
+  presdowave |        936           0           0          0          0
+preeconomy~e |        937           0           0          0          0
+
+. 
+. /* for xparty3 */
+. 
+. quietly logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO) 
+
+. 
+.         margins, at(xparty3=(2.073 2.036) ///
+>                 income=11.400  lookingforwork=.056  personeco=2.829  tradeper=2.626 ///
+>                 tradeself=3.829 proimmself=3.702 chinaself=3.184 ///
+>                 tradediffdem=1.195 immdiffdem=2.328 chinadiffdem=1.726  ///
+>                 tradediffrep=1.192 immdiffrep=2.124 chinadiffrep=1.691  ///
+>                 sdo=3.773  economy=2.807 ///
+>                 prexparty3wave=0 preincomewave=0 prelookingforworkwave=0 prepersonecowave=0 pretradeperwave=0 ///
+>                 pretradeselfwave=0 preproimmselfwave=0 prechinaselfwave=0 ///
+>                 pretradediffdemwave=0 preimmdiffdemwave=0 prechinadiffdemwave=0 ///
+>                 pretradediffrepwave=0  preimmdiffrepwave=0 prechinadiffrepwave=0 ///
+>                 presdowave=0 preeconomywave=0 /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>                 wave=0) post 
+
+Adjusted predictions                            Number of obs     =      1,350
+Model VCE    : Robust
+
+Expression   : Pr(demrepvote), predict()
+
+1._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+2._at        : xparty3         =       2.036
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .4246121    .041055    10.34   0.000     .3441457    .5050785
+          2  |    .439335   .0413713    10.62   0.000     .3582487    .5204213
+------------------------------------------------------------------------------
+
+.         nlcom (diff: _b[2._at] - _b[1._at])   
+
+        diff:  _b[2._at] - _b[1._at]
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        diff |   .0147229   .0014083    10.45   0.000     .0119626    .0174832
+------------------------------------------------------------------------------
+
+.         
+. /* for tradediffdem */
+. 
+. quietly logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>     wave, cluster(MNO) 
+
+.     
+.     margins, at(xparty3=2.073 ///
+>                 income=11.400  lookingforwork=.056  personeco=2.829  tradeper=2.626 ///
+>                 tradeself=3.829 proimmself=3.702 chinaself=3.184 ///
+>                 tradediffdem=(1.195 1.916) ///
+>                 immdiffdem=2.328 chinadiffdem=1.726  ///
+>                 tradediffrep=1.192 immdiffrep=2.124 chinadiffrep=1.691  ///
+>                 sdo=3.773  economy=2.807 ///
+>                 prexparty3wave=0 preincomewave=0 prelookingforworkwave=0 prepersonecowave=0 pretradeperwave=0 ///
+>                 pretradeselfwave=0 preproimmselfwave=0 prechinaselfwave=0 ///
+>                 pretradediffdemwave=0 preimmdiffdemwave=0 prechinadiffdemwave=0 ///
+>                 pretradediffrepwave=0  preimmdiffrepwave=0 prechinadiffrepwave=0 ///
+>                 presdowave=0 preeconomywave=0 /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>                 wave=0) post 
+
+Adjusted predictions                            Number of obs     =      1,350
+Model VCE    : Robust
+
+Expression   : Pr(demrepvote), predict()
+
+1._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+2._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.916
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .4246121    .041055    10.34   0.000     .3441457    .5050785
+          2  |   .5178716   .0482362    10.74   0.000     .4233304    .6124127
+------------------------------------------------------------------------------
+
+.     nlcom (diff: _b[2._at] - _b[1._at])   
+
+        diff:  _b[2._at] - _b[1._at]
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        diff |   .0932595   .0235047     3.97   0.000     .0471912    .1393277
+------------------------------------------------------------------------------
+
+. 
+. /* for immdiffdem */
+.  
+. quietly logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO) 
+
+. 
+.    margins, at(xparty3=2.073 ///
+>                 income=11.400  lookingforwork=.056  personeco=2.829  tradeper=2.626 ///
+>                 tradeself=3.829 proimmself=3.702 chinaself=3.184 ///
+>                 tradediffdem=1.195  ///
+>                 immdiffdem=(2.328 2.343) ///
+>                 chinadiffdem=1.726  ///
+>                 tradediffrep=1.192 immdiffrep=2.124 chinadiffrep=1.691  ///
+>                 sdo=3.773  economy=2.807 ///
+>                 prexparty3wave=0 preincomewave=0 prelookingforworkwave=0 prepersonecowave=0 pretradeperwave=0 ///
+>                 pretradeselfwave=0 preproimmselfwave=0 prechinaselfwave=0 ///
+>                 pretradediffdemwave=0 preimmdiffdemwave=0 prechinadiffdemwave=0 ///
+>                 pretradediffrepwave=0  preimmdiffrepwave=0 prechinadiffrepwave=0 ///
+>                 presdowave=0 preeconomywave=0 /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>                 wave=0) post 
+
+Adjusted predictions                            Number of obs     =      1,350
+Model VCE    : Robust
+
+Expression   : Pr(demrepvote), predict()
+
+1._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+2._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.343
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .4246121    .041055    10.34   0.000     .3441457    .5050785
+          2  |   .4257819   .0410604    10.37   0.000     .3453049    .5062589
+------------------------------------------------------------------------------
+
+.     nlcom (diff: _b[2._at] - _b[1._at])   
+
+        diff:  _b[2._at] - _b[1._at]
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        diff |   .0011698   .0003757     3.11   0.002     .0004335    .0019061
+------------------------------------------------------------------------------
+
+. 
+. /* for chinadiffdem */
+. 
+. quietly logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO) 
+
+. 
+.    margins, at(xparty3=2.073 ///
+>                 income=11.400  lookingforwork=.056  personeco=2.829  tradeper=2.626 ///
+>                 tradeself=3.829 proimmself=3.702 chinaself=3.184 ///
+>                 tradediffdem=1.195  immdiffdem=2.328 ///
+>                 chinadiffdem=(1.726 1.954)  ///
+>                 tradediffrep=1.192 immdiffrep=2.124 chinadiffrep=1.691  ///
+>                 sdo=3.773  economy=2.807 ///
+>                 prexparty3wave=0 preincomewave=0 prelookingforworkwave=0 prepersonecowave=0 pretradeperwave=0 ///
+>                 pretradeselfwave=0 preproimmselfwave=0 prechinaselfwave=0 ///
+>                 pretradediffdemwave=0 preimmdiffdemwave=0 prechinadiffdemwave=0 ///
+>                 pretradediffrepwave=0  preimmdiffrepwave=0 prechinadiffrepwave=0 ///
+>                 presdowave=0 preeconomywave=0 /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>                 wave=0) post 
+
+Adjusted predictions                            Number of obs     =      1,350
+Model VCE    : Robust
+
+Expression   : Pr(demrepvote), predict()
+
+1._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+2._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.954
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .4246121    .041055    10.34   0.000     .3441457    .5050785
+          2  |   .4443138   .0430012    10.33   0.000     .3600329    .5285946
+------------------------------------------------------------------------------
+
+.     nlcom (diff: _b[2._at] - _b[1._at])   
+
+        diff:  _b[2._at] - _b[1._at]
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        diff |   .0197017    .005804     3.39   0.001     .0083261    .0310772
+------------------------------------------------------------------------------
+
+. 
+. /* for tradediffrep */
+. 
+. quietly logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO) 
+
+. 
+.   margins, at(xparty3=2.073 ///
+>                 income=11.400  lookingforwork=.056  personeco=2.829  tradeper=2.626 ///
+>                 tradeself=3.829 proimmself=3.702 chinaself=3.184 ///
+>                 tradediffdem=1.195  immdiffdem=2.328 chinadiffdem=1.726   ///
+>                 tradediffrep=(1.192 1.592) ///
+>                 immdiffrep=2.124 chinadiffrep=1.691  ///
+>                 sdo=3.773  economy=2.807 ///
+>                 prexparty3wave=0 preincomewave=0 prelookingforworkwave=0 prepersonecowave=0 pretradeperwave=0 ///
+>                 pretradeselfwave=0 preproimmselfwave=0 prechinaselfwave=0 ///
+>                 pretradediffdemwave=0 preimmdiffdemwave=0 prechinadiffdemwave=0 ///
+>                 pretradediffrepwave=0  preimmdiffrepwave=0 prechinadiffrepwave=0 ///
+>                 presdowave=0 preeconomywave=0 /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>                 wave=0) post 
+
+Adjusted predictions                            Number of obs     =      1,350
+Model VCE    : Robust
+
+Expression   : Pr(demrepvote), predict()
+
+1._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+2._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.592
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .4246121    .041055    10.34   0.000     .3441457    .5050785
+          2  |   .3807008   .0400988     9.49   0.000     .3021087     .459293
+------------------------------------------------------------------------------
+
+.     nlcom (diff: _b[2._at] - _b[1._at])   
+
+        diff:  _b[2._at] - _b[1._at]
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        diff |  -.0439113   .0119756    -3.67   0.000    -.0673831   -.0204395
+------------------------------------------------------------------------------
+
+. 
+. /* for immdiffrep */
+. 
+. quietly logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO)  
+
+. 
+.   margins, at(xparty3=2.073 ///
+>                 income=11.400  lookingforwork=.056  personeco=2.829  tradeper=2.626 ///
+>                 tradeself=3.829 proimmself=3.702 chinaself=3.184 ///
+>                 tradediffdem=1.195  immdiffdem=2.328 chinadiffdem=1.726   ///
+>                 tradediffrep=1.192 ///
+>                 immdiffrep=(2.124 2.634) ///
+>                 chinadiffrep=1.691  ///
+>                 sdo=3.773  economy=2.807 ///
+>                 prexparty3wave=0 preincomewave=0 prelookingforworkwave=0 prepersonecowave=0 pretradeperwave=0 ///
+>                 pretradeselfwave=0 preproimmselfwave=0 prechinaselfwave=0 ///
+>                 pretradediffdemwave=0 preimmdiffdemwave=0 prechinadiffdemwave=0 ///
+>                 pretradediffrepwave=0  preimmdiffrepwave=0 prechinadiffrepwave=0 ///
+>                 presdowave=0 preeconomywave=0 /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>                 wave=0) post 
+
+Adjusted predictions                            Number of obs     =      1,350
+Model VCE    : Robust
+
+Expression   : Pr(demrepvote), predict()
+
+1._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+2._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.634
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .4246121    .041055    10.34   0.000     .3441457    .5050785
+          2  |   .3739653   .0435473     8.59   0.000     .2886142    .4593163
+------------------------------------------------------------------------------
+
+.     nlcom (diff: _b[2._at] - _b[1._at])   
+
+        diff:  _b[2._at] - _b[1._at]
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        diff |  -.0506468   .0112189    -4.51   0.000    -.0726355   -.0286581
+------------------------------------------------------------------------------
+
+. 
+. /* chinadiffrep */
+. 
+. quietly logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO) 
+
+. 
+.   margins, at(xparty3=2.073 ///
+>                 income=11.400  lookingforwork=.056  personeco=2.829  tradeper=2.626 ///
+>                 tradeself=3.829 proimmself=3.702 chinaself=3.184 ///
+>                 tradediffdem=1.195  immdiffdem=2.328 chinadiffdem=1.726   ///
+>                 tradediffrep=1.192 immdiffrep=2.124 ///
+>                 chinadiffrep=(1.691 1.667) ///
+>                 sdo=3.773  economy=2.807 ///
+>                 prexparty3wave=0 preincomewave=0 prelookingforworkwave=0 prepersonecowave=0 pretradeperwave=0 ///
+>                 pretradeselfwave=0 preproimmselfwave=0 prechinaselfwave=0 ///
+>                 pretradediffdemwave=0 preimmdiffdemwave=0 prechinadiffdemwave=0 ///
+>                 pretradediffrepwave=0  preimmdiffrepwave=0 prechinadiffrepwave=0 ///
+>                 presdowave=0 preeconomywave=0 /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>                 wave=0) post 
+
+Adjusted predictions                            Number of obs     =      1,350
+Model VCE    : Robust
+
+Expression   : Pr(demrepvote), predict()
+
+1._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+2._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.667
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .4246121    .041055    10.34   0.000     .3441457    .5050785
+          2  |   .4265313   .0410444    10.39   0.000     .3460858    .5069769
+------------------------------------------------------------------------------
+
+.     nlcom (diff: _b[2._at] - _b[1._at])   
+
+        diff:  _b[2._at] - _b[1._at]
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        diff |   .0019192   .0005245     3.66   0.000     .0008913    .0029472
+------------------------------------------------------------------------------
+
+. 
+. /* sdo */
+. 
+. quietly logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>     tradeself proimmself chinaself ///
+>         tradediffdem immdiffdem chinadiffdem  ///
+>         tradediffrep immdiffrep chinadiffrep ///
+>         sdo  economy ///
+>         prexparty3wave preincomewave prelookingforworkwave prepersonecowave pretradeperwave ///
+>         pretradeselfwave   preproimmselfwave  prechinaselfwave ///
+>         pretradediffdemwave  preimmdiffdemwave prechinadiffdemwave ///
+>         pretradediffrepwave  preimmdiffrepwave prechinadiffrepwave ///
+>         presdowave preeconomywave  /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO) 
+
+. 
+.   margins, at(xparty3=2.073 ///
+>                 income=11.400  lookingforwork=.056  personeco=2.829  tradeper=2.626 ///
+>                 tradeself=3.829 proimmself=3.702 chinaself=3.184 ///
+>                 tradediffdem=1.195  immdiffdem=2.328 chinadiffdem=1.726   ///
+>                 tradediffrep=1.192 immdiffrep=2.124 chinadiffrep=1.691  ///
+>                 sdo=(3.773 3.930) ///
+>                 economy=2.807 ///
+>                 prexparty3wave=0 preincomewave=0 prelookingforworkwave=0 prepersonecowave=0 pretradeperwave=0 ///
+>                 pretradeselfwave=0 preproimmselfwave=0 prechinaselfwave=0 ///
+>                 pretradediffdemwave=0 preimmdiffdemwave=0 prechinadiffdemwave=0 ///
+>                 pretradediffrepwave=0  preimmdiffrepwave=0 prechinadiffrepwave=0 ///
+>                 presdowave=0 preeconomywave=0 /* acsunemplwave=0  acsmfgwave=0 acsincomewave=0 */ ///
+>                 wave=0) post 
+
+Adjusted predictions                            Number of obs     =      1,350
+Model VCE    : Robust
+
+Expression   : Pr(demrepvote), predict()
+
+1._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =       3.773
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+2._at        : xparty3         =       2.073
+               income          =        11.4
+               lookingfor~k    =        .056
+               personeco       =       2.829
+               tradeper        =       2.626
+               tradeself       =       3.829
+               proimmself      =       3.702
+               chinaself       =       3.184
+               tradediffdem    =       1.195
+               immdiffdem      =       2.328
+               chinadiffdem    =       1.726
+               tradediffrep    =       1.192
+               immdiffrep      =       2.124
+               chinadiffrep    =       1.691
+               sdo             =        3.93
+               economy         =       2.807
+               prexparty3~e    =           0
+               preincomew~e    =           0
+               prelooking~e    =           0
+               prepersone~e    =           0
+               pretradepe~e    =           0
+               pretradese~e    =           0
+               preproimms~e    =           0
+               prechinase~e    =           0
+               pretra~mwave    =           0
+               preimm~mwave    =           0
+               prechi~mwave    =           0
+               pretra~pwave    =           0
+               preimm~pwave    =           0
+               prechi~pwave    =           0
+               presdowave      =           0
+               preeconomy~e    =           0
+               wave            =           0
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         _at |
+          1  |   .4246121    .041055    10.34   0.000     .3441457    .5050785
+          2  |   .4343877    .041133    10.56   0.000     .3537685    .5150068
+------------------------------------------------------------------------------
+
+.     nlcom (diff: _b[2._at] - _b[1._at])    
+
+        diff:  _b[2._at] - _b[1._at]
+
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+        diff |   .0097756   .0031303     3.12   0.002     .0036404    .0159108
+------------------------------------------------------------------------------
+
+.  
+.  
+. /*Table 3 analyses*/
+.  /*Table S3 */ 
+.  
+. xtreg cutdifftherm xparty3 income lookingforwork personeco tradeper ///
+>     economy ///
+>          /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave , fe 
+
+Fixed-effects (within) regression               Number of obs     =      1,771
+Group variable: MNO                             Number of groups  =        932
+
+R-sq:                                           Obs per group:
+     within  = 0.1297                                         min =          1
+     between = 0.7637                                         avg =        1.9
+     overall = 0.6838                                         max =          2
+
+                                                F(7,832)          =      17.71
+corr(u_i, Xb)  = 0.6889                         Prob > F          =     0.0000
+
+--------------------------------------------------------------------------------
+  cutdifftherm |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+       xparty3 |  -1.292683   .2348563    -5.50   0.000    -1.753664   -.8317029
+        income |  -.0405585   .0492496    -0.82   0.410    -.1372265    .0561095
+lookingforwork |  -.4662418   .5118091    -0.91   0.363    -1.470831    .5383469
+     personeco |   -.059807   .1359558    -0.44   0.660    -.3266636    .2070496
+      tradeper |  -.2584864   .1149753    -2.25   0.025    -.4841622   -.0328107
+       economy |   -.850834   .1238534    -6.87   0.000    -1.093936   -.6077321
+          wave |  -.4153499   .1289729    -3.22   0.001    -.6685003   -.1621994
+         _cons |   16.26881   .8217139    19.80   0.000     14.65593    17.88168
+---------------+----------------------------------------------------------------
+       sigma_u |  3.9350764
+       sigma_e |   2.586227
+           rho |  .69835158   (fraction of variance due to u_i)
+--------------------------------------------------------------------------------
+F test that all u_i=0: F(931, 832) = 2.08                    Prob > F = 0.0000
+
+.  
+.  
+. drop if voted2016==0
+(0 observations deleted)
+
+. logit demrepvote xparty3 income lookingforwork personeco tradeper ///
+>    economy ///
+>           /* acsunemplwave acsmfgwave acsincomewave */ ///
+>     wave, cluster(MNO) 
+
+Iteration 0:   log pseudolikelihood = -1091.0455  
+Iteration 1:   log pseudolikelihood = -362.81407  
+Iteration 2:   log pseudolikelihood = -342.28404  
+Iteration 3:   log pseudolikelihood = -340.55612  
+Iteration 4:   log pseudolikelihood =  -340.5531  
+Iteration 5:   log pseudolikelihood =  -340.5531  
+
+Logistic regression                             Number of obs     =      1,582
+                                                Wald chi2(7)      =     494.80
+                                                Prob > chi2       =     0.0000
+Log pseudolikelihood =  -340.5531               Pseudo R2         =     0.6879
+
+                                    (Std. Err. adjusted for 894 clusters in MNO)
+--------------------------------------------------------------------------------
+               |               Robust
+    demrepvote |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+       xparty3 |  -2.205748   .1124086   -19.62   0.000    -2.426064   -1.985431
+        income |  -.0058713   .0238835    -0.25   0.806    -.0526821    .0409394
+lookingforwork |  -.7079376   .5953146    -1.19   0.234    -1.874733    .4588575
+     personeco |  -.0842414   .1200911    -0.70   0.483    -.3196157    .1511329
+      tradeper |  -.0398609   .1206569    -0.33   0.741    -.2763441    .1966222
+       economy |   -1.17413   .1114458   -10.54   0.000     -1.39256   -.9557005
+          wave |  -.0597152   .2025022    -0.29   0.768    -.4566123    .3371818
+         _cons |   8.063563   .5606959    14.38   0.000      6.96462    9.162507
+--------------------------------------------------------------------------------
+
+.         
+. log close
+      name:  <unnamed>
+       log:  /Users/slm45/Dropbox/backup_Stata/mutz/log/mutz-code-panel-edited-v1.log
+  log type:  text
+ closed on:  10 May 2018, 12:11:49
+------------------------------------------------------------------------------------------------------------------------

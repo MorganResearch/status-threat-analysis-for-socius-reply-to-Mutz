@@ -1,0 +1,30 @@
+	(1)	(2)	(3)	(4)	(5)	(6)	(7)	(8)	(9)	(10)	(11)	(12)	(13)	(14)	(15)	(16)	(17)
+	N data	N data	N data	N data	N data	N x T data	N x T data	N data	N x T data	N x T data	N data	N data	N data	N x T data	N x T data	N data	N data
+VARIABLES	y0	y1	y1	y1 with y0 lag	y1 with y0 lag	FE	FE	y1-y0	FE	FE	y1-y0	y1-y0	y1-y0	FE	FE	y1-y0	y1-y0
+																	
+finances_better0	-2.360		-1.660		-0.296											-0.367	-0.500
+	(0.148)		(0.172)		(0.126)											(0.131)	(0.200)
+finances_better1		-2.488	-1.568	-1.000	-0.867												
+		(0.163)	(0.184)	(0.116)	(0.129)												
+rep_warmer0				0.737	0.722												
+				(0.0199)	(0.0209)												
+finances_better						-0.425	-0.425		-0.388	-0.401				-0.597	-0.685		
+						(0.116)	(0.119)		(0.116)	(0.120)				(0.137)	(0.165)		
+finances_better_diff								-0.425			-0.388	-0.401	-0.401			-0.597	-0.685
+								(0.116)			(0.116)	(0.120)	(0.116)			(0.137)	(0.165)
+wave2016									-0.355	-0.232				0.701	1.202		
+									(0.117)	(0.167)				(0.393)	(0.598)		
+ch_finances_better													0.257				
+													(0.234)				
+finances_better_xw1														-0.367	-0.500		
+														(0.131)	(0.200)		
+Constant	16.48	16.70	18.69	5.111	5.709	10.86	10.64		10.93	10.69	-0.355	-0.232	-0.489	11.52	11.47	0.701	1.202
+	(0.446)	(0.504)	(0.526)	(0.459)	(0.524)	(0.336)	(0.351)		(0.336)	(0.352)	(0.117)	(0.167)	(0.169)	(0.395)	(0.470)	(0.393)	(0.598)
+																	
+Observations	1,111	1,111	1,111	1,111	1,111	2,222	1,176	1,111	2,222	1,176	1,111	588	1,111	2,222	1,176	1,111	588
+R-squared	0.186	0.173	0.237	0.631	0.633	0.012	0.021	0.012	0.020	0.024	0.010	0.019	0.011	0.027	0.035	0.017	0.029
+2-wave-only	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes	Yes
+Changers	All	All	All	All	All	All	Changers	All	All	Changers	All	Changers	All	All	Changers	All	Changers
+Group						A	A	A	B	C	B	C	C	F	F	F	F
+Number of MNO						1,111	588		1,111	588				1,111	588		
+Standard errors in parentheses																	
