@@ -1,4 +1,4 @@
-####This is an updated repository (from the May 2018 repository status-threat-analysis-for-socius) that includes new analysis for the reply to Mutz's comment on the July 2018 article published in Socius.
+#### This is an updated repository (from the May 2018 repository status-threat-analysis-for-socius) that includes new analysis for the reply to Mutz's comment on the July 2018 article published in Socius.
 
   * The original article is available at https://doi.org/10.1177/2378023118788217, as of July 24, 2018. 
 
@@ -18,7 +18,7 @@
     The results of the Socius article and the Rostock lecture are not affected by the sdo mismatch, since the "pre" sdo measure was not used for either set of analyses.  However, in order to be consistent with the methodology literature in providing correct explanations, I need to have consistently measured variables.  The relevant changes identified and suggested by the analysis in the current file are carried forward and implemented in
       - use-mutz-to-explain-fe-models.do and (implicitly, then also use-mutz-to-explain-fe-models-two-predictors.do).
 
-3.  use-mutz-to-explain-fe-models.do, .log
+3.  use-mutz-to-explain-fe-models.do
 
   * This file takes the do file mutz-code-panel-edited-v2.do from May 2018, which was posted to GitHub with the July 2018 article published in Socius, and uses the same setup.  That setup is based on  Mutz's original code that she released, along with additional code chunks for the critic.
 
@@ -30,9 +30,9 @@
     
   Additional notes: 
 
-    1.  Some of the code that generates results in mutz-code-panel-edited-v2.do is commented out in this file.  It is the same code and there is no reason to regenerate the results and write over the existing outreg files.  It is re-run already in the intermediate file mutz-code-panel-edited-v2-sdo-problems.do.
+    - Some of the code that generates results in mutz-code-panel-edited-v2.do is commented out in this file.  It is the same code and there is no reason to regenerate the results and write over the existing outreg files.  It is re-run already in the intermediate file mutz-code-panel-edited-v2-sdo-problems.do.
 
-    2.  Some deprecated code is aso present below, as it is the vestige of the original Rostock-lecture code.  This code is for additional fe models that cluttter the explanations and outreg files.  They are commented out in this version, but could be restored, perhaps with 
+    - Some deprecated code is aso present below, as it is the vestige of the original Rostock-lecture code.  This code is for additional fe models that cluttter the explanations and outreg files.  They are commented out in this version, but could be restored, perhaps with 
      some minor editing.
 
 4.  use-mutz-to-explain-fe-models-two-predictors.do, .log
