@@ -6,17 +6,17 @@
 
 1.  additional-results-for-reply-to-Mutz.do, log (from July 8, 2018)
 
-  * Mostly analysis of vote switching for Socius reply
+  * This files includes analysis of vote switching.
 
 2.  mutz-code-panel-edited-v2-sdo-problems.do
 
   * This file takes the do file mutz-code-panel-edited-v2.do from May 2018, which was posted to GitHub with the July 2018 article published in Socius, and uses the same setup.  That setup is based on  Mutz's original code that she released, along with additional code chunks for the critic.
+
   * The current file includes a second set of additional code chunks for subsequent work.  This additional work clarifies the sdo mismatch problem investigated in October and November 2018 when tidying up this analysis to explain fixed effect models, first presented in Rostock on July 2, 2018.  
 
     Conclusions:  
 
-    The results of the Socius article and the Rostock lecture are not affected by the sdo mismatch, since the "pre" sdo measure was not used for either set of analyses.  However, in order to be consistent with the methodology literature in providing correct explanations, I need to have consistently measured variables.  The relevant changes identified and suggested by the analysis in the current file are carried forward and implemented in
-      - use-mutz-to-explain-fe-models.do and (implicitly, then also use-mutz-to-explain-fe-models-two-predictors.do).
+      The results of the Socius article and the Rostock lecture are not affected by the sdo mismatch, since the "pre" sdo measure was not used for either set of analyses.  However, in order to be consistent with the methodology literature in providing correct explanations, I need to have consistently measured variables.  The relevant changes identified and suggested by the analysis in the current file are carried forward and implemented in use-mutz-to-explain-fe-models.do (and implicitly, then, also in use-mutz-to-explain-fe-models-two-predictors.do).
 
 3.  use-mutz-to-explain-fe-models.do
 
@@ -34,7 +34,7 @@
 
       - Some deprecated code is aso present below, as it is the vestige of the original Rostock-lecture code.  This code is for additional fe models that cluttter the explanations and outreg files.  They are commented out in this version, but could be restored, perhaps with some minor editing.
 
-4.  use-mutz-to-explain-fe-models-two-predictors.do, .log
+4.  use-mutz-to-explain-fe-models-two-predictors.do
 
  * This file carries on from use-mutz-to-explain-fe-models.do in order to 
   demonstrate that the basic reasoning (with the slight exception of drift
