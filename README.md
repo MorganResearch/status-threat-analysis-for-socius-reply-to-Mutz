@@ -4,7 +4,7 @@
 
   * Other relevant links:
     The original article is available at https://doi.org/10.1177/2378023118788217, as of July 24, 2018. 
-    The comment form Mutz is at https://journals.sagepub.com/doi/full/10.1177/2378023118808619, as of December 6, 2018.
+    The comment from Mutz is at https://journals.sagepub.com/doi/full/10.1177/2378023118808619, as of December 6, 2018.
 
 ##### These are the additional files in this updated repository that generate analysis:
 
