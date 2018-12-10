@@ -1,6 +1,10 @@
 ### This is an updated repository (from the May 2018 repository status-threat-analysis-for-socius) that includes new analysis for the reply to Mutz's comment on the July 2018 article published in Socius.
 
-  * The original article is available at https://doi.org/10.1177/2378023118788217, as of July 24, 2018. 
+  * The reply is available at https://journals.sagepub.com/doi/full/10.1177/2378023118811502, as of December 6, 2018. The pdf file is at https://journals.sagepub.com/doi/pdf/10.1177/2378023118811502.
+
+  * Other relevant links:
+    The original article is available at https://doi.org/10.1177/2378023118788217, as of July 24, 2018. 
+    The comment form Mutz is at https://journals.sagepub.com/doi/full/10.1177/2378023118808619, as of December 6, 2018.
 
 ##### These are the additional files in this updated repository that generate analysis:
 
